@@ -1,0 +1,2 @@
+graft flask_tabler/static
+graft flask_tabler/templates
