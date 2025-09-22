@@ -1,0 +1,20 @@
+{% from "tabler/elements/base.html" import get_link %}
+
+{% macro render_tooltip(label="", tooltip="", pos="top") %}
+  <a
+    href="{{ get_link(kwargs.url) }}"
+    class="btn {{ kwargs.class or '' }}"
+    {{ render_tooltip_to_other(tooltip, pos, **kwargs) }}
+    >
+    {{ _(label)|safe }}
+  </a>
+{% endmacro %}
+
+{% macro render_tooltip_to_other(tooltip="", pos="top") %}
+  {% if tooltip %}
+    data-bs-toggle="tooltip"
+    {% if kwargs.html %} data-bs-html="true"{% endif %}
+    data-bs-placement="{{ pos }}"
+    title="{{ _(tooltip)|safe }}"
+  {% endif %}
+{% endmacro %}

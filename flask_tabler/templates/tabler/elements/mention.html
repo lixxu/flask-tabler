@@ -1,0 +1,15 @@
+{% from "tabler/elements/base.html" import get_file_url %}
+
+{% macro render_mention(label="", kind="color") %}
+  {% set tag = "a" if kind in ("avatar", "app") else "span" %}
+  <{{ kwargs.tag or tag }} class="mention {{ kwargs.class or '' }}">
+    <span class="mention-{{ kind }} {{ kwargs.kind_class or '' }}
+      {% if kwargs.bg %} bg-{{ kwargs.bg }}{% endif %}"
+      {% if kwargs.img %}
+        style="background-image: url({{ get_file_url(kwargs.img) }});"
+      {% endif %}
+      >
+    </span>
+    {{ _(label)|safe }}
+  </{{ kwargs.tag or tag }}>
+{% endmacro %}

@@ -1,0 +1,24 @@
+{% if g.user %}
+  <div class="nav-item dropdown">
+    <a href="#" class="nav-link d-flex lh-1 text-reset p-0"
+      data-bs-toggle="dropdown" aria-label="Open user menu">
+      {% if g.user.avatar %}
+        <span class="avatar avatar-sm"
+          style="background-image: url({{ g.user.avatar }})">
+        </span>
+      {% else %}
+        {{ render_icon("user") }}
+      {% endif %}
+      <div class="d-none d-xl-block ps-2">
+        <div>{{ g.user.display_name }}</div>
+      </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+      <a href="{{ config.PROFILE_URL or url_for('auth.profile') }}" class="dropdown-item">{{ _("Profile") }}</a>
+      <div class="dropdown-divider"></div>
+      <a href="{{ config.LOGOFF_URL or url_for('auth.logoff') }}" class="dropdown-item">{{ _("Logout") }}</a>
+    </div>
+  </div>
+{% else %}
+  <a href="{{ config.LOGIN_URL or url_for('auth.login') }}" class="dropdown-item">{{ _("Login") }}</a>
+{% endif %}

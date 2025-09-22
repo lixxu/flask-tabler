@@ -1,0 +1,6 @@
+{% from "tabler_icons/helper.html" import render_icon as base_render_icon %}
+
+{% macro render_icon(icon) %}
+  {# {{ kwargs }} #}
+  {{ base_render_icon(icon, **kwargs) }}
+{% endmacro %}

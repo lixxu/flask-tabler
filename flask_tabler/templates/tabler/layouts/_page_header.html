@@ -1,0 +1,21 @@
+<div class="page-header d-print-none{{ ' text-white' if g.tabler_layout == 'overlap' }}">
+  <div class="container-xl">
+    <div class="row g-2 align-items-center">
+      <div class="col">
+        <!-- Page pre-title -->
+        <div class="page-pretitle">
+          {{ _(page_pretitle)|safe }}
+        </div>
+        <h2 class="page-title">
+          {{ _(page_title)|safe }}
+        </h2>
+      </div>
+      <!-- Page title actions -->
+      <div class="col-auto ms-auto d-print-none">
+        <div class="btn-list">
+          {{ page_title_actions_html|safe }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+{% from "tabler/elements/base.html" import get_link %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_list_group(header="", items=[]) %}
+  <div class="card {{ kwargs.card_class or '' }}">
+    <div class="card-header {{ kwargs.header_class or '' }}">
+      <h3 class="card-title {{ kwargs.title_class or '' }}">
+        {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+        {{ _(header)|safe }}
+        {{ render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) }}
+      </h3>
+    </div>
+    {% if kwargs.in_body %}
+      <div class="card-body {{ kwargs.body_class or '' }}">
+        <div class="row g-{{ kwargs.gutter or 3 }}">
+          {% for item in items %}
+            <div class="col-{{ item.col or 6 }} {{ item.class or '' }}">
+              <div class="row g-{{ item.gutter or 2 }} align-items-{{ item.align or 'center' }}">
+                {% for col in item.cols %}
+                  {{ col|safe }}
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="list-group
+        {% if kwargs.flush %} list-group-flush{% endif %}
+        {% if kwargs.hover %} list-group-hoverable{% endif %}
+        {{ kwargs.class or '' }}"
+        {{ (kwargs.extras or "")|safe }}
+        >
+        {% if kwargs.as_links %}
+          {% for item in items %}
+            <a href="{{ get_link(item.url) }}"
+              class="list-group-item list-group-item-action
+                {% if item.active %} active{% endif %}
+                {{ item.class or '' }}
+              ">
+              {{ render_icon(item.icon, **(item.icon_kw or {})) }}
+              {{ _(item.label or item.url or "")|safe }}
+              {{ render_icon(item.right_icon, **(item.right_icon_kw or {})) }}
+            </a>
+          {% endfor %}
+        {% else %}
+          {% for item in items %}
+            {% if item.is_group_header %}
+              <div class="list-group-header sticky-top {{ item.class or '' }}">
+                {{ render_icon(item.icon, **(item.icon_kw or {})) }}
+                {{ _(item.label)|safe }}
+                {{ render_icon(item.right_icon, **(item.right_icon_kw or {})) }}
+              </div>
+            {% else %}
+              <div class="list-group-item
+                {% if item.active %} active{% endif %}
+                {{ item.class or '' }}"
+                >
+                <div class="row
+                  align-items-{{ item.align or 'center' }}
+                  {{ item.second_class or '' }}"
+                  >
+                  {% for col in item.cols or [] %}
+                    {% if col is mapping %}
+                      <div class="{{ col.class or 'col-auto' }}">
+                        {{ col.content|safe }}
+                      </div>
+                    {% else %}
+                      {{ col|safe }}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+{% endmacro %}

@@ -1,0 +1,33 @@
+{% from "tabler/elements/base.html" import get_link %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_segmented_control(buttons=[]) %}
+  <nav class="nav nav-segmented
+    {% if kwargs.vertical %} nav-segmented-vertical{% endif %}
+    {% if kwargs.size %} nav-{{ kwargs.size }}{% endif %}
+    {% if kwargs.full_width %} w-100{% endif %}
+    {{ kwargs.class or '' }}
+    "
+    role="tablist">
+    {% for btn in buttons %}
+      <a class="nav-link {{ btn.class or '' }}
+        {% if btn.active %} active{% endif %}
+        {% if btn.disabled %} disabled{% endif %}
+        {% if btn.bg %} bg-{{ btn.bg }}{% endif %}
+        {% if btn.fg %} text-{{ btn.fg }}{% endif %}
+        "
+        role="tab"
+        href="{{ get_link(btn.url) }}"
+        {% if btn.active %}
+          data-bs-toggle="tab"
+          aria-selected="true"
+          aria-current="page"
+        {% endif %}
+        tabindex="-1">
+        {{ render_icon(btn.icon, **(btn.icon_kw or {})) }}
+        {{ _(btn.label) }}
+        {{ render_icon(btn.right_icon, **(btn.right_icon_kw or {})) }}
+      </a>
+    {% endfor %}
+  </nav>
+{% endmacro %}

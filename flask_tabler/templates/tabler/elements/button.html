@@ -1,0 +1,169 @@
+{% from "tabler/elements/avatar.html" import render_avatar %}
+{% from "tabler/elements/base.html" import fill_btn, get_link %}
+{% from "tabler/elements/spinner.html" import render_spinner %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro get_animation_class() %}
+  {% if kwargs.animation %}
+    btn-animate-icon
+    {% if kwargs.animation is string %}
+      btn-animate-icon-{{ kwargs.animation }}
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro render_button(url="", label="") %}
+  <a href="{{ get_link(url or kwargs.link) }}"
+    class="btn {{ kwargs.class or '' }}
+    {{ get_animation_class(**kwargs) }}
+    {% if kwargs.color %} btn-{{ kwargs.color }}{% endif %}
+    {% if kwargs.ghost %} btn-ghost-{{ kwargs.color or 'primary' }}{% endif %}
+    {% if kwargs.outline %} btn-outline-{{ kwargs.color or 'primary' }}{% endif %}
+    {% if kwargs.square %} btn-square{% endif %}
+    {% if kwargs.pill %} btn-pill{% endif %}
+    {% if kwargs.size %} btn-{{ kwargs.size }}{% endif %}
+    {% if kwargs.loading and not kwargs.spinner %} btn-loading{% endif %}
+    {% if kwargs.disabled %} disabled{% endif %}
+    {% if kwargs.as_icon %} btn-icon{% endif %}
+    {% if kwargs.full_width %} w-100{% endif %}
+    " role="button" aria-label="Button"
+    {% if kwargs.disabled %} disabled{% endif %}
+    >
+    {% set icon_animation_kw = dict(icon_size=1) if kwargs.animation else {} %}
+    {{ (kwargs.left_area or '')|safe }}
+    {% if kwargs.loading or kwargs.spinner %}
+      {{ render_spinner(size=kwargs.loading_size, tag="span", **(kwargs.spinner_kw or {})) }}
+    {% endif %}
+    {{ render_icon(kwargs.icon, **merge_dict(icon_animation_kw, kwargs.icon_kw)) }}
+    {% if not kwargs.as_icon %}{{ _(label) or url }}{% endif %}
+    {{ render_icon(kwargs.right_icon, **merge_dict(icon_animation_kw, kwargs.right_icon_kw, dict(class="ms-2"))) }}
+    {{ (kwargs.right_area or '')|safe }}
+  </a>
+{% endmacro %}
+
+{% macro link_to(url, label) %}
+  {{ render_button(url, label, **kwargs) }}
+{% endmacro %}
+
+{% macro render_link(url="", label="") %}
+  {{ render_button_link(url, label, **dict(kwargs, raw_link=true)) }}
+{% endmacro %}
+
+{% macro render_button_link(url="", label="") %}
+  <a
+    href="{{ get_link(url) }}"
+    class="{{ kwargs.class or '' }}
+      {% if not kwargs.raw_link %} btn btn-link{% endif %}"
+    {{ kwargs.extras or "" }}
+    >
+    {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+    {{ _(label) or url }}
+    {{ render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) }}
+  </a>
+{% endmacro %}
+
+{% macro render_button_list(buttons=[]) %}
+  <div class="btn-list
+    {% if kwargs.align %} justify-content-{{ kwargs.align }}{% endif %}">
+    {% for btn in buttons %}
+      {{ render_button(**btn) }}
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro render_button_actions(buttons=[]) %}
+  <div class="btn-actions {{ kwargs.class or '' }}">
+    {% for btn in buttons %}
+      {{ render_button(class="btn-action", **btn) }}
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro render_button_groups(buttons=[]) %}
+  <div class="btn-group{% if kwargs.vertical %}-vertical{% endif %}
+    {{ kwargs.class or '' }}"
+    >
+    {% for btn in buttons %}
+      {% if "color" in kwargs %}
+        {% do btn.update(color=kwargs.color) %}
+      {% endif %}
+      {{ render_button(**btn) }}
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro render_button_radios(buttons=[], name="") %}
+  {% set ele_name = name or "btn-radio" %}
+  <div class="btn-group{% if kwargs.vertical %}-vertical{% endif %}
+    {{ kwargs.class or '' }}"
+    >
+    {% for btn in buttons %}
+      <input
+        type="radio"
+        class="btn-check {{ btn.radio_class or '' }}"
+        name="{{ name }}"
+        id="{{ name }}-{{ loop.index }}"
+        autocomplete="off"
+        {% if btn.checked %}checked{% endif %}
+      >
+      <label
+        class="btn {{ btn.label_class or '' }}"
+        for="{{ name }}-{{ loop.index }}"
+        >
+        {{ render_icon(btn.icon, **(btn.icon_kw or {})) }}
+        {{ _(btn.label) }}
+        {{ render_icon(btn.right_icon, **(btn.right_icon_kw or {})) }}
+      </label>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro render_button_avatar(url="", label="") %}
+  <a href="{{ get_link(url) }}" class="btn{{ fill_btn(kwargs.color) }}" aria-label="Button">
+    {{ render_avatar(kwargs.avatar, kwargs.avatar_label, **(kwargs.avatar_kw or {})) }}
+    {{ _(label) }}
+  </a>
+{% endmacro %}
+
+{% macro render_button_dropdown(menus=[]) %}
+  <div class="dropdown {{ kwargs.class or '' }}">
+    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown">
+      {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+      {% if kwargs.label %}{{ _(kwargs.label) }}{% endif %}
+      {{ render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) }}
+    </button>
+    <div class="dropdown-menu">
+      {% for menu in menus %}
+        <a class="dropdown-item {{ menu.class or '' }}"
+          href="{{ get_link(menu.link) }}"
+          >
+          {{ render_icon(menu.icon, **(menu.icon_kw or {})) }}
+          {{ _(menu.label or "") }}
+          {{ render_icon(menu.right_icon, **(menu.right_icon_kw or {})) }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro render_button_modal(label, id) %}
+  <button type="button" class="btn{{ fill_btn(kwargs.color) }} {{ kwargs.class or '' }}" data-bs-toggle="modal" data-bs-target="#{{ id }}">
+    {{ _(label) }}
+  </button>
+{% endmacro %}
+
+{% macro render_x_button(label="Close") %}
+  <button type="button" class="btn-close {{ kwargs.class or '' }}"
+    {% if kwargs.disabled %}disabled{% endif %}
+    {% if kwargs.dismiss %}data-bs-dismiss="{{ kwargs.dismiss }}"{% endif %}
+    aria-label="{{ _(label) }}"
+  ></button>
+{% endmacro %}
+
+{% macro render_close(label="Close") %}
+  {{ render_x_button(label, **kwargs) }}
+{% endmacro %}
+
+{% macro render_x(label="Close") %}
+  {{ render_x_button(label, **kwargs) }}
+{% endmacro %}

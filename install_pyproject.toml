@@ -1,0 +1,52 @@
+[project]
+name = "flask_tabler"
+authors = [{ name = "lix", email = "xuzenglin@gmail.com" }]
+description = "a collection of jinja macros for tabler ui"
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["tabler", "flask_tabler"]
+license-files = ["LICENSE.txt"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Development Status :: 5 - Production/Stable",
+]
+dependencies = [
+    "cssmin",
+    "flask",
+    "flask-assets",
+    "flask-tabler-icons",
+    "flask-topassets",
+    "flask-autosize",
+    "flask-tomselect",
+    "jsmin",
+    "toppath",
+    "wtforms",
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = { attr = "flask_tabler.__version__" }
+
+[project.urls]
+"Homepage" = "https://github.com/lixxu/flask_tabler"
+"Bug Tracker" = "https://github.com/lixxu/flask_tabler/issues"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "cython"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# include-package-data = true
+py-modules = ["_custom_build"]
+
+[tool.setuptools.cmdclass]
+build_py = "_custom_build.build_py"
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*", "docs*", "examples*"]
+
+[tool.setuptools.package-data]
+flask_tabler = ["static/**", "templates/**"]

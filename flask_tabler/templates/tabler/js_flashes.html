@@ -1,0 +1,9 @@
+{% from "sweetalert2/helpers.html" import js_sweetalert2 %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, msg in messages %}
+      {{ js_sweetalert2(title=_(msg)|safe, icon=cat|get_sweet_icon, pos=cat|get_autoclose_pos, delay=cat|get_autoclose_delay, toast=cat|can_autoclose_flash) }}
+    {% endfor %}
+  {% endif %}
+{% endwith %}

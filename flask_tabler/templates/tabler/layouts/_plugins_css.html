@@ -1,0 +1,6 @@
+{% for plugin in config.TABLER_PLUGINS %}
+  {% set obj = config.TABLER_PLUGINS_MODULES[plugin] %}
+  {% for name in obj.bundled_css %}
+    {{ obj.get_path(name, "css") }}
+  {% endfor %}
+{% endfor %}

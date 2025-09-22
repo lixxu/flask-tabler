@@ -1,0 +1,20 @@
+{% from "tabler/elements/base.html" import fill_css, fill_text_color, fill_btn %}
+
+{% macro render_spinner(tag="div") %}
+  <{{ tag }}
+    class="
+    {% if kwargs.grow %}
+      spinner-grow
+    {% elif kwargs.dots %}
+      animated-dots
+    {% else %}
+      spinner-border
+    {% endif %}
+    {% if kwargs.color %} text-{{ kwargs.color }}{% endif %}
+    {% if kwargs.size %} spinner-border-{{ kwargs.size }}{% endif %}
+    {{ kwargs.class or '' }}
+    "
+    {{ (kwargs.extras or "")|safe }}
+    role="status">
+  </{{ tag }}>
+{% endmacro %}

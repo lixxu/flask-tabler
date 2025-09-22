@@ -1,0 +1,5 @@
+
+{% macro render_countup(id, value) %}
+  {% set defaults = dict(duration=2, startVal=kwargs.pop("start", 0)|int, decimalPlaces=kwargs.pop("decimal_places", 0)|int, useEasing=kwargs.pop("easing", true), useGrouping=kwargs.pop("grouping", true), separator=",", decimal=".", prefix="", suffix="") %}
+  <h1 id="{{ id }}" data-countup='{{ dict(defaults, **kwargs)|tojson }}'>{{ value }}</h1>
+{% endmacro %}

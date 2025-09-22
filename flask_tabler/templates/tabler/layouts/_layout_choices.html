@@ -1,0 +1,56 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% if config.TABLER_LAYOUTS %}
+<div class="nav-item dropdown d-flex">
+  <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="{{ _('Layout') }}" aria-expanded="false" data-bs-auto-close="outside" role="button">
+    {{ render_icon("layout-2", svg_class="icon icon-1") }}
+  </a>
+  <div class="dropdown-menu dropdown-menu-start dropdown-menu-sm-end dropdown-menu-card">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _("Layout") }}</h3>
+      </div>
+      <div class="dropdown-menu-columns">
+        {% set layouts = config.TABLER_LAYOUTS or [] %}
+        {% set middle = 1 + (layouts|length / 2)|int %}
+        {% for layout in (config.TABLER_LAYOUTS or []) %}
+          {% if loop.first or loop.index == middle %}
+            {% if loop.index == middle %}</div>{% endif %}
+            <div class="dropdown-menu-column">
+          {% endif %}
+            <a class="dropdown-item{{ ' active' if layout == g.tabler_layout }}" href="{{ 'javascript:void(0)' if layout == g.tabler_layout else url_for('tabler.index', layout=layout) }}">
+              {{ layout }}
+              {% if g.tabler_layout == layout %}
+                {{ render_icon("check", class="ms-auto", color="blue", svg_class="icon icon-2") }}
+              {% endif %}
+            </a>
+          {% if loop.last %}</div>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {# <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _("Layout") }}</h3>
+      </div>
+      <div class="list-group list-group-flush list-group-hoverable">
+        {% for layout in (config.TABLER_LAYOUTS or []) %}
+          <div class="list-group-item{{ ' active' if layout == g.tabler_layout }}">
+            <div class="row align-items-center">
+              <div class="col text-truncate">
+                <a href="{{ 'javascript:void(0)' if layout == g.tabler_layout else url_for('tabler.index', layout=layout) }}" class="text-body d-block">{{ layout }}</a>
+              </div>
+              <div class="col-auto">
+                {% if g.tabler_layout == layout %}
+                  {{ render_icon("check", color="blue", svg_class="icon icon-2") }}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div> #}
+</div>
+{% endif %}

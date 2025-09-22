@@ -1,0 +1,10 @@
+{% macro render_autosize(label) %}
+  <label class="form-label {{ kwargs.label_class or '' }}">{{ _(label) }}</label>
+  <textarea
+    class="form-control {{ kwargs.class or '' }}"
+    data-bs-toggle="autosize"
+    placeholder="{{ _(kwargs.placeholder or '') }}"
+    {% if kwargs.rows %}rows="{{ kwargs.rows }}"{% endif %}
+    {{ kwargs.extras or '' }}
+    >{{ kwargs.value or '' }}</textarea>
+{% endmacro %}

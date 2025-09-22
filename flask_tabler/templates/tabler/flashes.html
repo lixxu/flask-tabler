@@ -1,0 +1,18 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, msg in messages %}
+      <div class="alert alert-{{ cat|get_flash_category }} alert-dismissible" role="alert">
+        <div class="d-flex">
+          {% set icon = cat|get_flash_icon %}
+          {% if icon %}
+            <div class="me-2">{{ render_icon(icon, **(cat|get_flash_icon_kw)) }}</div>
+          {% endif %}
+          <div>{{ msg|safe }}</div>
+        </div>
+        <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}

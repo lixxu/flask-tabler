@@ -1,0 +1,17 @@
+{% if config.TABLER_SHOW_HEADER_SEARCH %}
+<div class="col-8 col-md-4 d-block ms-2 ms-lg-0
+  {% if g.tabler_layout not in ('boxed', 'fluid', 'horizontal', 'navbar-dark', 'fluid-navbar-dark') %}
+    me-2
+  {% endif %}">
+  <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
+    <form action="./" method="get" autocomplete="off" novalidate="">
+      <div class="input-icon">
+        <span class="input-icon-addon">
+          {{ render_icon("search", svg_class="icon icon-1") }}
+        </span>
+        <input type="text" value="{{ q or '' }}" class="form-control" placeholder="{{ _('Search...') }}" aria-label="{{ _('Search in somewhere') }}">
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}

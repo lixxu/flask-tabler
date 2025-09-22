@@ -1,0 +1,25 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_empty() %}
+  <div class="empty">
+    {% if kwargs.icon %}
+      <div class="empty-icon">
+        {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+      </div>
+    {% endif %}
+    {% if kwargs.header %}
+      <div class="empty-header">{{ _(kwargs.header) }}</div>
+    {% endif %}
+    {% if kwargs.title %}
+      <p class="empty-title">{{ _(kwargs.title) }}</p>
+    {% endif %}
+    {% if kwargs.remark %}
+      <p class="empty-subtitle text-secondary">{{ kwargs.remark }}</p>
+    {% endif %}
+    {% if kwargs.action %}
+      <div class="empty-action">
+        {{ kwargs.action|safe }}
+      </div>
+    {% endif %}
+  </div>
+{% endmacro %}

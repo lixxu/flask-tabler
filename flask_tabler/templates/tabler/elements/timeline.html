@@ -1,0 +1,30 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_one_timeline(event={}) %}
+  <li class="timeline-event">
+    <div class="timeline-event-icon {{ event.icon_class or '' }}">
+      {{ render_icon(event.icon, **(event.icon_kw or {})) }}
+    </div>
+    <div class="card timeline-event-card {{ event.card_class or '' }}">
+      <div class="card-body">
+        <div class="text-secondary float-end">{{ _(event.time_text) }}</div>
+        <h4>{{ _(event.title)|safe }}</h4>
+        {% if event.content %}
+          {{ _(event.content)|safe }}
+        {% else %}
+          <p class="text-secondary">{{ _(event.body)|safe }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </li>
+{% endmacro %}
+
+{% macro render_timeline(events=[]) %}
+  <ul class="timeline {{ kwargs.class or '' }}
+    {% if kwargs.simple %} timeline-simple{% endif %}
+    ">
+    {% for event in events %}
+      {{ render_one_timeline(event) }}
+    {% endfor %}
+  </ul>
+{% endmacro %}

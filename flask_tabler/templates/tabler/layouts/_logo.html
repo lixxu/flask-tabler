@@ -1,0 +1,11 @@
+<div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+  <a href=".">
+    {% if config.SVG_LOGO_URL or config.SVG_LOGO %}
+      <svg width="110" height="32" class="navbar-brand-image">
+        <image xlink:href="{{ config.SVG_LOGO_URL or url_for('static', filename=config.SVG_LOGO) }}" src="{{ config.LOGO_URL or url_for('static', filename='logo.png') }}" width="110" height="32"/>
+      </svg>
+    {% else %}
+      <img class="navbar-brand-image" src="{{ config.LOGO_URL or url_for('static', filename='logo.png') }}" height="32" width="110" alt="{{ _('Home') }}">
+    {% endif %}
+  </a>
+</div>

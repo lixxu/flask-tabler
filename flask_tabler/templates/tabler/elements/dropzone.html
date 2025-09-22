@@ -1,0 +1,26 @@
+{% macro render_dropzone(id, autocomplete="off", novalidate=true) %}
+  <form
+    class="dropzone {{ kwargs.class or '' }}"
+    id="dropzone-{{ id }}"
+    action="{{ kwargs.action or '.' }}"
+    autocomplete="{{ autocommplete }}"
+    {% if novalidate %} novalidate{% endif %}>
+    <div class="fallback">
+      <input
+        name="{{ kwargs.name or id }}"
+        type="file"
+        {% if kwargs.multiple %}multple{% endif %}
+      />
+    </div>
+    {% if kwargs.title or kwargs.remark %}
+      <div class="dz-message">
+        {% if kwargs.title %}
+          <h3 class="dropzone-msg-title">{{ _(kwargs.title) }}</h3>
+        {% endif %}
+        {% if kwargs.remark %}
+          <span class="dropzone-msg-desc">{{ _(kwargs.remark) }}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+  </form>
+{% endmacro %}

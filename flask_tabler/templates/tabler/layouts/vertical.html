@@ -1,0 +1,98 @@
+{% extends "tabler/layouts/base.html" %}
+{% from "tabler/elements/icon.html" import render_icon %}
+{% from "tabler/elements/avatar.html" import render_avatar %}
+{% from "tabler/layouts/_helper.html" import render_navbar_header_links, render_navbar_top_links %}
+
+{% block layout_header %}
+  <!-- Navbar -->
+  <aside class="navbar navbar-vertical navbar-expand-lg
+    {{ ' navbar-right' if g.tabler_layout == 'vertical-right' }}
+    {{ ' navbar-transparent' if g.tabler_layout == 'transparent' }}
+    {% if config.TABLER_STICKY_TOP %} sticky-top{% endif %}"
+    {% if g.tabler_layout in ("combined", "vertical") %}data-bs-theme="dark"{% endif %}
+    >
+    <div class="container-fluid">
+      {% include "tabler/layouts/_aside_navbar_menu_icon.html" %}
+      {% include "tabler/layouts/_aside_logo.html" %}
+      <div class="navbar-nav flex-row d-lg-none">
+        <div class="nav-item d-flex me-2">
+          <div class="btn-list">
+            {% block aside_navbar_top_links %}
+              {{ render_navbar_top_links(navbar_top_links) }}
+            {% endblock %}
+          </div>
+        </div>
+        <div class="d-flex">
+          {% include "tabler/layouts/_theme_mode.html" %}
+          {% include "tabler/layouts/_language_choices.html" %}
+          {% include "tabler/layouts/_theme_choices.html" %}
+          {% include "tabler/layouts/_layout_choices.html" %}
+          {% block aside_navbar_top_right %}{% endblock %}
+        </div>
+        {% include "tabler/layouts/_login_avatar.html" %}
+      </div>
+      <div class="navbar-collapse collapse" id="sidebar-menu">
+        <ul class="navbar-nav pt-lg-3">
+          {% block aside_header_links_area %}
+            {{ render_navbar_header_links(header_links) }}
+          {% endblock %}
+        </ul>
+        <span class="d-flex d-lg-none">
+          {% block aside_header_search %}
+            {% include "tabler/layouts/_header_search.html" %}
+          {% endblock %}
+        </span>
+      </div>
+    </div>
+  </aside>
+  <!-- Navbar -->
+  <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none{% if config.TABLER_STICKY_TOP %} sticky-top{% endif %}">
+    <div class="container-xl">
+      {% include "tabler/layouts/_navbar_menu_icon.html" %}
+      {% if config.SHOW_DRAG_AREA and g.tabler_layout not in ("combined", ) %}
+        <div class="navbar-nav drag-area mx-2 w-100">
+          <div class="d-none">vertical-drag1</div>
+        </div>
+      {% endif %}
+      <div class="navbar-nav flex-row order-md-last">
+        <div class="nav-item d-flex me-2">
+          <div class="btn-list">
+            {% block navbar_top_links_area %}
+              {{ render_navbar_top_links(navbar_top_links) }}
+            {% endblock %}
+          </div>
+        </div>
+        <div class="d-flex">
+          {% include "tabler/layouts/_theme_mode.html" %}
+          {% include "tabler/layouts/_language_choices.html" %}
+          {% include "tabler/layouts/_theme_choices.html" %}
+          {% include "tabler/layouts/_layout_choices.html" %}
+        </div>
+        {% include "tabler/layouts/_login_avatar.html" %}
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-menu">
+        <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+          <div class="d-flex w-100">
+            {% if g.tabler_layout == "combined" %}
+              <div class="p-0">
+                <ul class="navbar-nav">
+                  {% block header_links_area %}
+                    {{ render_navbar_header_links(header_links) }}
+                  {% endblock %}
+                </ul>
+              </div>
+            {% endif %}
+            {% if config.SHOW_DRAG_AREA %}
+              <div class="p-0 flex-grow-1 drag-area mx-2">
+                <ul class="navbar-nav d-none">vertical-drag2</ul>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        {% block header_search %}
+          {% include "tabler/layouts/_header_search.html" %}
+        {% endblock %}
+      </div>
+    </div>
+  </header>
+{% endblock %}

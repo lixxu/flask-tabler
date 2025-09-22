@@ -1,0 +1,17 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_ribbon() %}
+  <div class="ribbon {{ kwargs.class or '' }}
+    {% if kwargs.bookmark %} ribbon-bookmark{% endif %}
+    {% if kwargs.bg %} bg-{{ kwargs.bg }}{% endif %}
+    {% if kwargs.pos %} ribbon-{{ kwargs.pos }}{% endif %}
+    {% if kwargs.pos2 %} ribbon-{{ kwargs.pos2 }}{% endif %}
+    "
+    >
+    {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+    {% if kwargs.text %}
+      {{ _(kwargs.text)|safe }}
+    {% endif %}
+    {{ render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) }}
+  </div>
+{% endmacro %}

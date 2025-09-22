@@ -1,0 +1,61 @@
+{% from "tabler/elements/base.html" import get_file_url %}
+
+{% macro render_carousel(id, images=[], image_width=100, thumb_ratio="4x3") %}
+  {% set show_thumb = kwargs.get("show_thumb", false) %}
+  <div id="carousel-{{ id }}"
+    class="carousel slide {{ kwargs.class or '' }}
+      {% if kwargs.fade %} carousel-fade{% endif %}"
+    data-bs-ride="carousel">
+    <div class="carousel-indicators
+      {% if kwargs.vertical %} carousel-indicators-vertical{% endif %}
+      {% if kwargs.indicator %} carousel-indicators-{{ kwargs.indicator }}{% endif %}
+      {% if show_thumb %} carousel-indicators-thumb{% endif %}
+      {{ kwargs.indicator_class or '' }}
+      ">
+      {% for img in images %}
+        <button type="button"
+          data-bs-target="#carousel-{{ id }}"
+          data-bs-slide-to="{{ loop.index0 }}"
+          class="ratio
+            ratio-{{ thumb_ratio or '4x3' }}
+            {% if loop.first %} active{% endif %}"
+          {% if show_thumb %}
+            style="background-image: url({{ get_file_url(img.url, **kwargs) }})"
+          {% endif %}
+        ></button>
+      {% endfor %}
+    </div>
+    <div class="carousel-inner">
+      {% for img in images %}
+        <div class="carousel-item{% if loop.first %} active{% endif %}">
+          <img class="d-block w-{{ image_width }}" alt="" src="{{ get_file_url(img.url, **kwargs) }}" />
+          {% if img.caption %}
+            <div class="carousel-caption-background d-none d-md-block"></div>
+            <div class="carousel-caption d-none d-md-block">
+              <h3>{{ _(img.caption) }}</h3>
+              <p>{{ _(img.remark) }}</p>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    {% if kwargs.get("show_next_button", true) %}
+      <a class="carousel-control-prev"
+        data-bs-target="#carousel-{{ id }}"
+        role="button"
+        data-bs-slide="prev"
+        >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">{{ _("Previous") }}</span>
+      </a>
+      <a class="carousel-control-next"
+        data-bs-target="#carousel-{{ id }}"
+        role="button"
+        data-bs-slide="next"
+        >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">{{ _("Next") }}</span>
+      </a>
+    {% endif %}
+  </div>
+{% endmacro %}

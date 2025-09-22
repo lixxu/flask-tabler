@@ -1,0 +1,8 @@
+{% macro render_legend(bg="") %}
+  <span class="legend
+    {% if bg %} bg-{{ bg }}{% endif %}
+    {{ kwargs.class or '' }}"
+    {{ (kwargs.extras or '')|safe }}
+    >
+  </span>
+{% endmacro %}

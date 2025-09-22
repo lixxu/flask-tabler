@@ -1,0 +1,94 @@
+{% from "tabler/elements/base.html" import get_link %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_badge(label="") %}
+  <span class="badge
+    {{ kwargs.class or '' }}
+    {% if kwargs.size %} badge-{{ kwargs.size }}{% endif %}
+    {% if kwargs.pill %} badge-pill{% endif %}
+    {% if kwargs.outline %} badge-outline{% endif %}
+    {% if kwargs.bg %} bg-{{ kwargs.bg }}{% endif %}
+    {% if kwargs.fg %} text-{{ kwargs.fg }}-fg{% endif %}
+    {% if kwargs.blink %} badge-blink{% endif -%}
+    ">{% if not label %}</span>
+    {% else %}
+      {{- render_icon(kwargs.icon, **(kwargs.icon_kw or {})) -}}
+      {{- _(label) -}}
+      {{- render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) -}}
+      </span>
+    {% endif %}
+{% endmacro %}
+
+{% macro render_badge_heading(head, content, label="") %}
+  <h{{ head }}>{{ _(content) }}
+    {{ render_badge(label, **kwargs) }}
+  </h{{ head }}>
+{% endmacro %}
+
+{% macro render_badge_h1(content, label) %}
+  {{ render_badge_heading(1, content, label, **kwargs) }}
+{% endmacro %}
+
+{% macro render_badge_h2(content, label) %}
+  {{ render_badge_heading(2, content, label, **kwargs) }}
+{% endmacro %}
+
+{% macro render_badge_h3(content, label) %}
+  {{ render_badge_heading(3, content, label, **kwargs) }}
+{% endmacro %}
+
+{% macro render_badge_h4(content, label) %}
+  {{ render_badge_heading(4, content, label, **kwargs) }}
+{% endmacro %}
+
+{% macro render_badge_h5(content, label) %}
+  {{ render_badge_heading(5, content, label, **kwargs) }}
+{% endmacro %}
+
+{% macro render_badge_h6(content, label) %}
+  {{ render_badge_heading(6, content, label, **kwargs) }}
+{% endmacro %}
+
+{% macro render_badge_link(url="", label="") %}
+  <a href="{{ get_link(url) }}" class="badge {{ kwargs.class or '' }}
+    {% if kwargs.pill %} badge-pill{% endif %}
+    {% if kwargs.bg %} bg-{{ kwargs.bg }}{% endif %}
+    {% if kwargs.fg %} text-{{ kwargs.fg }}-fg{% endif %}
+    "
+    >
+    {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+    {{ _(label) or url }}
+    {{ render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) }}
+  </a>
+{% endmacro %}
+
+{% macro render_badge_button(label, badge_label="") %}
+  <a class="btn
+    {% if kwargs.btn_class %} btn-{{ kwargs.btn_class }}{% endif %}
+    {{ kwargs.class or '' }}"
+    {{ (kwargs.extras or "")|safe }}
+    >
+    {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+    {{ _(label) }}
+    {{ render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) }}
+    {{ render_badge(badge_label, **(kwargs.badge_kw or {})) }}
+  </a>
+{% endmacro %}
+
+{% macro render_badge_blink(label, bg="blue") %}
+  <a href="{{ get_link(kwargs.link) }}" class="btn position-relative">{{ _(label) }}
+    <span class="badge bg-{{ bg }} badge-notification badge-blink"></span>
+  </a>
+{% endmacro %}
+
+{% macro render_badge_notification(label, bg="blue") %}
+  <a href="{{ get_link(kwargs.link) }}"
+    class="btn position-relative">{{ _(label) }}
+    <span class="badge badge-notification
+      bg-{{ bg }}
+      text-{{ kwargs.fg or bg }}-fg
+      {% if kwargs.pill %} badge-pill{% endif %}
+      ">
+    </span>
+  </a>
+{% endmacro %}

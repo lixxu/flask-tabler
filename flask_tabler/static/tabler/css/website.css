@@ -1,0 +1,6 @@
+.ts-wrapper.is-invalid:not(.single),
+.was-validated .invalid:not(.single),
+.was-validated :invalid+.ts-wrapper:not(.single) {
+  /* background-size: calc(.75em + .375rem) calc(.75em + .375rem) !important; */
+  background-size: 2em !important;
+}

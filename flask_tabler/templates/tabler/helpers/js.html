@@ -1,0 +1,19 @@
+{% macro js_modal(id) %}
+  document.addEventListener("DOMContentLoaded", function() {
+    var myModal = new bootstrap.Modal(document.getElementById("{{ id }}"))
+    myModal.show()
+  });
+{% endmacro %}
+
+{% macro js_update_copyright_year(id="copy-year") %}
+  document.getElementById("{{ id }}").innerHTML = new Date().getFullYear();
+{% endmacro %}
+
+{% macro js_set_navbar_header_active(id, auto_prefix=true) %}
+  {% if auto_prefix %}
+    {% set full_id = "%s-%s"|format(kwargs.prefix or "navbar-header-link", id) %}
+  {% else %}
+    {% set full_id = id %}
+  {% endif %}
+  $(".{{ full_id }}").addClass("active");
+{% endmacro %}

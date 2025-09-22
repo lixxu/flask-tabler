@@ -1,0 +1,16 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_hr() %}
+  <hr />
+{% endmacro %}
+
+{% macro render_divider(label="") %}
+  <div class="hr-text {{ kwargs.class or '' }}
+    {% if kwargs.align %} hr-text-{{ kwargs.align }}{% endif %}
+    {% if kwargs.color %} text-{{ kwargs.color }}{% endif %}
+    ">
+    {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+    {{ _(label) }}
+    {{ render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) }}
+  </div>
+{% endmacro %}

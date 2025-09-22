@@ -1,0 +1,26 @@
+{% macro render_placeholder() %}
+  {% if kwargs.align %}
+    <div class="text-{{ kwargs.align }} {{ kwargs.class or '' }}">
+  {% endif %}
+  {% set css_flag = "div" %}
+  {% if kwargs.animation %}
+    {% set css_flag = "span" %}
+    <p class="placeholder-{{ kwargs.animation }}">
+  {% endif %}
+  <{{ css_flag }} class="placeholder
+    {% if kwargs.avatar %} avatar
+      {% if kwargs.avatar_size %} avatar-{{ kwargs.avatar_size }}{% endif %}
+    {% endif %}
+    {% if kwargs.image %} ratio ratio-{{ kwargs.ratio or '16x9' }}{% endif %}
+    {% if kwargs.col %} col-{{ kwargs.col }}{% endif %}
+    {% if kwargs.size %} placeholder-{{ kwargs.size }}{% endif %}
+    {% if kwargs.bg %} bg-{{ kwargs.bg }}{% endif %}
+    {{ kwargs.class or '' }}
+    "
+    >
+  </{{ css_flag }}>
+  {% if kwargs.animation %}</p>{% endif %}
+  {% if kwargs.align %}
+    </div>
+  {% endif %}
+{% endmacro %}

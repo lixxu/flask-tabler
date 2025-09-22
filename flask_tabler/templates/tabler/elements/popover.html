@@ -1,0 +1,22 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_popover(label, trigger="click") %}
+  <button
+    type="button"
+    class="btn {{ kwargs.class or '' }}
+      {% if kwargs.color %} btn-{{ kwargs.color }}{% endif %}
+    "
+    {% if trigger %} data-bs-trigger="{{ trigger }}"{% endif %}
+    data-bs-toggle="popover"
+    title="{{ kwargs.title or '' }}"
+    data-bs-content="{{ kwargs.content or '' }}"
+    {% if kwargs.pos %}
+      data-bs-container="body"
+      data-bs-placement="{{ kwargs.pos }}"
+    {% endif %}
+    >
+    {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+    {{ _(label) }}
+    {{ render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) }}
+  </button>
+{% endmacro %}

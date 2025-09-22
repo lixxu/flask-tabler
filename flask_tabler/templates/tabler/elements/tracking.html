@@ -1,0 +1,16 @@
+{% from "tabler/elements/base.html" import fill_css, fill_color %}
+
+{% macro render_tracking(trackings=[]) %}
+  <div class="tracking {{ kwargs.class or '' }}">
+    {% for track in trackings %}
+      <div
+        class="tracking-block {{ track.class or '' }}
+          {% if track.color %} bg-{{ track.color }}{% endif %}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="{{ track.pos or 'top' }}"
+        title="{{ _(track.tooltip) }}"
+        {{ (kwargs.extras or "")|safe }}>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}

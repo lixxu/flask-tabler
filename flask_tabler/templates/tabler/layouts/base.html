@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN" data-bs-theme-base="{{ config.TABLER_THEME_BASE }}" data-bs-theme-font="{{ config.TABLER_THEME_FONT }}" data-bs-theme-primary="{{ g.tabler_theme_primary or config.TABLER_THEME_PRIMARY }}" data-bs-theme-radius="{{ g.tabler_theme_radius or config.TABLER_THEME_RADIUS }}"{% if g.dark_mode %} data-bs-theme="dark"{% endif %}>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{{ _(config.TITLE or "a website") }}{% endblock %}{% block title_end %} · {{ _(config.TITLE_END or config.COMPANY or "a company") }}{% endblock %}</title>
+    <meta name="msapplication-TileColor" content="#066fd1">
+    <meta name="theme-color" content="#066fd1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <link rel="icon" href="{{ config.FAVICON_URL or url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ config.FAVICON_URL or url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta name="description" content="{{ config.WEBSITE_DESCRIPTION or '' }}">
+    <meta name="canonical" content="{{ request.url }}">
+    {# {% assets "tabler_css" %}
+      <link href="{{ tabler.urls.css }}" rel="stylesheet" />
+    {% endassets %}
+    {% assets "tabler_css2" %}
+      <link href="{{ tabler.urls.css2 }}" rel="stylesheet" />
+    {% endassets %} #}
+    {% include "tabler/layouts/_plugins_css.html" %}
+    {% block website_assets_css %}{% endblock %}
+
+    <style>
+      :root {
+        --tblr-font-sans-serif: "Inter", -apple-system, BlinkMacSystemFont,
+          San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+      }
+      body {
+        font-feature-settings: "cv03", "cv04", "cv11";
+      }
+      {% block website_style %}{% endblock %}
+    </style>
+  </head>
+  <body
+    {% if g.tabler_layout in ("boxed", "fluid") %}
+      class="layout-{{ g.tabler_layout }}"
+    {% elif g.tabler_layout == "condensed-box" %}
+      class="layout-boxed"
+    {% elif "fluid" in g.tabler_layout %}
+      class="layout-fluid"
+    {% endif %}
+    >
+    <div class="page">
+      {% block layout_header %}{% endblock %}
+      <div class="page-wrapper">
+        <!-- Page header -->
+        {% include "tabler/layouts/_page_header.html" %}
+        <!-- Page body -->
+        <div class="page-body">
+          <div class="container-xl">
+            {% include "tabler/flashes.html" %}
+            {% block page_body %}{% endblock %}
+          </div>
+        </div>
+        {% include "tabler/layouts/_footer.html" %}
+      </div>
+    </div>
+    {# {% assets "tabler_js" %}
+      <script type="text/javascript" src="{{ tabler.urls.js }}"></script>
+    {% endassets %}
+    {% assets "tabler_js2" %}
+      <script type="text/javascript" src="{{ tabler.urls.js2 }}"></script>
+    {% endassets %} #}
+      {# <script type="text/javascript" src="{{ url_for('tabler.static', filename='vendors/countup/countUp.umd.js') }}"></script> #}
+
+    {% include "tabler/layouts/_plugins_js.html" %}
+    {% block website_assets_js %}{% endblock %}
+    <script type="text/javascript">
+      {% if config.TABLER_FLASHES_TYPE == "js" %}
+        {% include "tabler/js_flashes.html" %}
+      {% endif %}
+      {% block js %}{% endblock %}
+    </script>
+  </body>
+</html>

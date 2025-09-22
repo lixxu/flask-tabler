@@ -1,0 +1,65 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+{% from "tabler/elements/base.html" import get_link, get_file_url %}
+
+{% macro pick_class() %}
+  {% if kwargs.size %} avatar-{{ kwargs.size }}{% endif %}
+  {% if kwargs.bg %} bg-{{ kwargs.bg }}-lt{% endif %}
+  {{ kwargs.shape or '' }}
+  {{ kwargs.class or '' }}
+{% endmacro %}
+
+{% macro render_avatar_status() %}
+  {% if kwargs.status %}
+    <span class="badge bg-{{ kwargs.status }}">{{ kwargs.status_label or '' }}</span>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_avatar() %}
+  <span class="avatar {{ pick_class(**kwargs) }}"
+    {% if kwargs.img %}
+      style="background-image: url({{ get_file_url(kwargs.img) }})">
+      {{ render_avatar_status(**kwargs) }}
+    {% elif kwargs.label %}
+      >{{ render_avatar_status(**kwargs) }} {{ _(kwargs.label) }}
+    {% elif kwargs.icon %}
+      >{{ render_icon(kwargs.icon) }}{{ render_avatar_status(**kwargs) }}
+    {% endif %}
+  </span>
+{% endmacro %}
+
+{% macro render_avatar_list(avatars=[], shape="rounded") %}
+  <div class="avatar-list
+    {% if kwargs.stacked %} avatar-list-stacked{% endif %}
+    {{ kwargs.class or '' }}"
+    >
+    {% for avatar in avatars %}
+      {{ render_avatar(**avatar) }}
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro render_avatar_placeholder(icon="") %}
+  <a href="{{ get_link(kwargs.url) }}"
+    class="avatar avatar-upload {{ kwargs.class or '' }}
+      {{ pick_class(**kwargs) }}"
+    >
+    {{ render_icon(icon, **(kwargs.icon_kw or {})) }}
+  </a>
+{% endmacro %}
+
+{% macro render_avatar_brand() %}
+  <span class="avatar avatar-2 {{ kwargs.class or ''}}"
+    {% if kwargs.img %}
+      style="background-image: url({{ get_file_url(kwargs.img, **kwargs) }})"
+    {% endif %}
+    >
+    {% if kwargs.label %}{{ _(kwargs.label)|safe }}{% endif %}
+    <span class="avatar-brand"
+      {% if kwargs.brand_img %}
+        style="background-image: url({{ get_file_url(kwargs.brand_img, **kwargs) }})"
+      {% endif %}
+      >
+      {% if kwargs.brand_label %}{{ _(kwargs.brand_label)|safe }}{% endif %}
+    </span>
+  </span>
+{% endmacro %}

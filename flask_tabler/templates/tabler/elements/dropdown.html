@@ -1,0 +1,49 @@
+{% from "tabler/elements/base.html" import get_link %}
+{% from "tabler/elements/icon.html" import render_icon %}
+{% from "tabler/elements/badge.html" import render_badge %}
+{% from "tabler/elements/base.html" import get_link %}
+
+{% macro render_dropdown(label, menus=[], trans=true) %}
+  <div class="dropdown {{ kwargs.class or '' }}">
+    <a href="#" class="btn dropdown-toggle" data-bs-toggle="dropdown">{{ _(label) if trans else label }}</a>
+    <div class="dropdown-menu
+      {% if kwargs.arrow %} dropdown-menu-arrow{% endif %}
+      {% if kwargs.dark %} dropdown-menu-dark{% endif %}
+      ">
+      {% if kwargs.header %}
+        <span class="dropdown-header">{{ _(kwargs.header) }}</span>
+      {% endif %}
+      {% for menu in menus %}
+        {% if menu %}
+          <a class="dropdown-item
+            {% if menu.active %} active{% endif %}
+            {% if menu.disabled %} disabled{% endif %}
+            {{ menu.class or '' }}
+            "
+            href="{{ get_link(menu.url) }}"
+            {% if menu.id %}id="{{ menu.id }}"{% endif %}
+            {{ menu.extras or "" }}
+            >
+            {{ render_icon(menu.icon, **(menu.icon_kw or {})) }}
+            {{ _(menu.label) }}
+            {{ render_icon(menu.right_icon, **(menu.right_icon_kw or {})) }}
+            {% if menu.badge or menu.badge_label %}
+              {{ render_badge(menu.badge_label, **(menu.badge_kw or {})) }}
+            {% endif %}
+          </a>
+        {% else %}
+          <div class="dropdown-divider"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro render_dropdown_card(label, card, max_width="20rem", trans=true) %}
+  <div class="dropdown {{ kwargs.class or '' }}">
+    <a href="#" class="btn dropdown-toggle" data-bs-toggle="dropdown">{{ _(label) if trans else label }}</a>
+    <div class="dropdown-menu dropdown-menu-card {{ kwargs.menu_class or '' }}" style="max-width: {{ max_width }};">
+      {{ card|safe }}
+    </div>
+  </div>
+{% endmacro %}

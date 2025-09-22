@@ -1,0 +1,7 @@
+{% macro render_chart(id, size="lg") %}
+  <div class="card">
+    <div class="card-body">
+      <div id="chart-{{ id }}" class="chart-{{ size }}"></div>
+    </div>
+  </div>
+{% endmacro %}

@@ -1,0 +1,120 @@
+{% from "tabler/elements/base.html" import fill_color %}
+
+{% macro fill_class() %}
+  {% if kwargs.size %}progress-{{ kwargs.size }}{% endif %}
+  {{ kwargs.class or '' }}
+{% endmacro %}
+
+{% macro fill_height(with_head=true) %}
+  {% if kwargs.height %}
+    {% if with_head %}
+      style="height: {{ kwargs.height }}px;"
+    {% else %}
+      height: {{ kwargs.height }}px;
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro fill_pb_class() %}
+  {% if kwargs.bg %} bg-{{ kwargs.bg }}{% endif %}
+  {% if kwargs.fg %} text-{{ kwargs.fg }}{% endif %}
+  {{ kwargs.pb_class or '' }}
+{% endmacro %}
+
+{% macro fill_label(value, hidden=true) %}
+  {% set label = kwargs.label or "{}%".format(value) %}
+  {% if hidden or (kwargs.threshold or 0) > value %}
+    <span class="visually-hidden">{{ _(label) }}</span>
+  {% else %}
+    {{ _(label) }}
+  {% endif %}
+{% endmacro %}
+
+{% macro render_progress(value=0, hidden=true) %}
+  <div
+    class="progress {{ fill_class(**kwargs) }}"
+    {{ fill_height(**kwargs) }}
+    >
+    <div
+      class="progress-bar {{ fill_pb_class(**kwargs) }}"
+      style="width: {{ value|int }}%"
+      role="progressbar"
+      aria-valuenow="{{ value|int }}"
+      aria-valuemin="{{ kwargs.min_val or 0 }}"
+      aria-valuemax="{{ kwargs.max_val or 100 }}"
+      aria-label="{{ value|int }}%"
+      >
+      {{ fill_label(value, hidden, **kwargs) }}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro render_progress_striped(value=0, animated=true, hidden=true) %}
+  <div
+    class="progress {{ fill_class(**kwargs) }}"
+    {{ fill_height(**kwargs) }}
+    >
+    <div
+      class="progress-bar progress-bar-striped
+        {% if animated %} progress-bar-animated{% endif %}
+        {{ fill_pb_class(**kwargs) }}"
+      style="width: {{ value|int }}%"
+      >
+      {{ fill_label(value, hidden, **kwargs) }}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro render_progress_indeterminate() %}
+  <div
+    class="progress {{ fill_class(**kwargs) }}"
+    {{ fill_height(**kwargs) }}
+    >
+    <div
+      class="progress-bar progress-bar-indeterminate {{ fill_pb_class(**kwargs) }}">{{ fill_label(**kwargs) }}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro render_progress_native(value) %}
+  <progress class="progress {{ fill_class(**kwargs) }}" value="{{ value }}" {{ fill_height(**kwargs) }} max="{{ kwargs.max_val or 100 }}"></progress>
+{% endmacro %}
+
+{% macro render_progress_background(value, text="", bg="primary-lt", hidden=true) %}
+  <div class="progressbg {{ kwargs.class or '' }}">
+    <div class="progress progressbg-progress">
+      <div
+        class="progress-bar {{ fill_color(bg) }}"
+        style="width: {{ value }}%"
+        >
+      </div>
+    </div>
+    <div class="progressbg-text {{ kwargs.text_class or '' }}">{{ _(text) }}</div>
+    <div class="progressbg-value {{ kwargs.value_class or '' }}">
+      {% if (kwargs.threshold or 100) > value %}
+        {% if kwargs.value_label %}
+          {{ _(kwargs.value_label)|safe }}
+        {% else %}
+          {{ _(value)|safe }}%
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro render_progress_multiple(progresses=[]) %}
+  <div class="progress-stacked {{ kwargs.class or '' }}"
+    {{ fill_height(**kwargs) }}
+    >
+    {% for pb in progresses %}
+      {% do pb.setdefault("hidden", kwargs.hidden) %}
+      <div class="progress {{ pb.class or '' }}"
+        style="width: {{ pb.value|int }}%;
+          {{ fill_height(false, **kwargs) }}"
+        >
+        <div class="progress-bar {{ fill_pb_class(**pb) }}">
+          {{ fill_label(**pb) }}
+        </div>
+      </div>
+    {% endfor %}
+{% endmacro %}

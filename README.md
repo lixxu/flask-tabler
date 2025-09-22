@@ -1,11 +1,11 @@
 # flask-tabler
 
-flask-tabler is a collection of Jinja macros for [tabler](https://preview.tabler.io/) and Flask.
+flask-tabler is a collection of Jinja macros for [tabler](https://tabler.io/) and Flask.
 
 ## Installation
 
 ```
-$ pip install -U flask-tabler
+pip install -U flask-tabler
 ```
 
 ## Example

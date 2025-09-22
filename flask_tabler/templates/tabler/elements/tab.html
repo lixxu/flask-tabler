@@ -1,0 +1,64 @@
+{% from "tabler/elements/base.html" import get_link %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_tab(tabs=[]) %}
+  <div class="card {{ kwargs.class or '' }}">
+    <div class="card-header {{ kwargs.header_class or '' }}">
+      <ul
+        class="nav nav-tabs card-header-tabs {{ kwargs.ul_class or '' }}
+          {% if kwargs.full_width %} nav-fill{% endif %}"
+        data-bs-toggle="tabs"
+        >
+        {% for tab in tabs %}
+          {% if tab.dropdowns %}
+            <li class="nav-item dropdown {{ tab.class or '' }}">
+              <a class="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                role="button"
+                >
+                {{ render_icon(tab.icon, **(tab.icon_kw or {})) }}
+                {{ _(tab.label or "" ) }}
+                {{ render_icon(tab.right_icon, **(tab.right_icon_kw or {})) }}
+              </a>
+              <div class="dropdown-menu">
+                {% for menu in tab.dropdowns %}
+                  <a class="dropdown-item" href="{{ get_link(menu.url) }}">
+                    {{ render_icon(menu.icon, **(menu.icon_kw or {})) }}
+                    {{ _(menu.label) }}
+                    {{ render_icon(menu.right_icon, **(menu.right_icon_kw or {})) }}
+                  </a>
+                {% endfor %}
+              </div>
+            </li>
+          {% else %}
+            <li class="nav-item {{ tab.class or '' }}">
+              <a
+                href="#tabs-{{ tab.id }}"
+                class="nav-link {{ tab.link_class or '' }}
+                  {% if tab.active %} active{% endif %}"
+                data-bs-toggle="tab"
+                >
+                {{ render_icon(tab.icon, **(tab.icon_kw or {})) }}
+                {{ _(tab.label or "") }}
+                {{ render_icon(tab.right_icon, **(tab.right_icon_kw or {})) }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="card-body">
+      <div class="tab-content">
+        {% for tab in tabs %}
+          <div class="tab-pane {{ tab.class or '' }}
+            {% if tab.active %} active{% endif %}"
+            id="tabs-{{ tab.id }}">
+            {{ _(tab.content)|safe }}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endmacro %}

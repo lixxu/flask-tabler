@@ -1,0 +1,44 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_accordion(items=[], id="") %}
+  {% set icon = kwargs.icon or "chevron-down" %}
+  {% set icon_kw = dict(dict(icon_size=1), **(kwargs.icon_kw or {})) %}
+  {% set extra_icon = kwargs.extra_icon or "" %}
+  {% set extra_icon_kw = dict(dict(icon_size=1), **(kwargs.extra_icon_kw or {})) %}
+  {% set button_class = kwargs.button_class or "" %}
+  {% set toggle_class = kwargs.toggle_class or "" %}
+  <div class="accordion {{ kwargs.class or '' }}
+    {% if kwargs.inverted %} accordion-inverted{% endif %}
+    {% if kwargs.animation %} accordion-{{ kwargs.animation }}{% endif %}
+    " id="acc-{{ id }}">
+    {% for acc in items %}
+      <div class="accordion-item {{ acc.class or '' }}">
+        <div class="accordion-header {{ acc.header_class or '' }}">
+          <button
+            class="accordion-button collapsed {{ acc.button_class or button_class }}"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse-{{ id }}-{{ loop.index }}"
+            aria-controls="collapse-{{ id }}-{{ loop.index }}"
+            aria-expanded="false">
+            {{ render_icon(acc.extra_icon or extra_icon, **(dict(extra_icon_kw, **(acc.extra_icon_kw or {})))) }}
+            {{ _(acc.header)|safe }}
+            <div class="accordion-button-toggle {{ acc.toggle_class or toggle_class }}">
+              {{ render_icon(acc.icon or icon, **(dict(icon_kw, **(acc.icon_kw or {})))) }}
+            </div>
+          </button>
+        </div>
+        <div id="collapse-{{ id }}-{{ loop.index }}"
+          class="accordion-collapse collapse"
+          {% if not kwargs.always_open %}
+            data-bs-parent="#acc-{{ id }}"
+          {% endif %}
+          style="">
+          <div class="accordion-body {{ acc.body_class or '' }}">
+            {{ _(acc.body)|safe }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}

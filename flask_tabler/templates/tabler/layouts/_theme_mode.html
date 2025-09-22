@@ -1,0 +1,12 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% if config.TABLER_ENABLE_THEME_MODE %}
+  <div class="nav-item">
+  <a href="{{ url_for('tabler.index', theme='dark') }}" class="nav-link px-0 hide-theme-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="{{ _('Enable dark mode') }}" data-bs-original-title="{{ _('Enable dark mode') }}">
+    {{ render_icon("moon", svg_class="icon icon-1") }}
+  </a>
+  <a href="{{ url_for('tabler.index', theme='light') }}" class="nav-link px-0 hide-theme-light" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="{{ _('Enable light mode') }}" data-bs-original-title="{{ _('Enable light mode') }}">
+    {{ render_icon("sun", svg_class="icon icon-1") }}
+  </a>
+  </div>
+{% endif %}

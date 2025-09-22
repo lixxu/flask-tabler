@@ -1,0 +1,19 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_stars_rating(id="", options=[]) %}
+  {% set value = kwargs.value or 1 %}
+  {# {% set icon = kwargs.pop("icon", "") or "filled-star" %}
+  {% set icon_kw = dict(icon_size=2, class="gl-star-full %s"|format(kwargs.pop("class", ""))) %} #}
+  <span class="gl-star-rating gl-star-rating--ltr">
+    <select id="{{ id }}">
+      <option value="">{{ _(kwargs.label or 'Select a rating') }}</option>
+    {% for opt in options|reverse %}
+      <option value="{{ loop.revindex }}"
+        {% if loop.revindex == value %}selected{% endif %}
+        >
+        {{ _(opt.label) }}
+      </option>
+    {% endfor %}
+    </select>
+  </span>
+{% endmacro %}

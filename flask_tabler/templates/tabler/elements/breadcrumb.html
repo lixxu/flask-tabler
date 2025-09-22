@@ -1,0 +1,26 @@
+{% from "tabler/elements/base.html" import get_link %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_breadcrumb(links=[], current=-1) %}
+  <ol class="breadcrumb {{ kwargs.class or '' }}
+    {% if kwargs.sep %} breadcrumb-{{ kwargs.sep }}{% endif %}
+    {% if kwargs.mute %} breadcrumb-muted{% endif %}
+    "
+    aria-label="breadcrumbs"
+    >
+    {% set current = links|length if current == -1 else current %}
+    {% for link in links %}
+      <li class="breadcrumb-item {{ link.class or '' }}
+        {% if loop.index == current %}active{% endif %}
+        "
+        {% if loop.index == current %}aria-current="page"{% endif %}
+        >
+        <a href="{{ get_link(link.url) }}">
+          {{ render_icon(link.icon, **(link.icon_kw or {})) }}
+          {% if link.label %}{{ _(link.label) }}{% endif %}
+          {{ render_icon(link.right_icon, **(link.right_icon_kw or {})) }}
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+{% endmacro %}

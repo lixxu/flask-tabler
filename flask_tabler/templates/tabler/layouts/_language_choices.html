@@ -1,0 +1,35 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% if config.TABLER_ENABLE_I18N %}
+<div class="nav-item dropdown d-flex">
+  <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="{{ _('Language') }}" aria-expanded="false">
+    {{ render_icon("language", svg_class="icon icon-1") }}
+  </a>
+  <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ _("Language") }}</h3>
+      </div>
+      <div class="list-group list-group-flush list-group-hoverable">
+        {% for lang, code, lang_label in config.TABLER_LANGUAGES or [] %}
+          <div class="list-group-item{{ ' active' if lang == g.lang }}">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <span class="flag flag-xs flag-country-{{ code }}"></span>
+              </div>
+              <div class="col text-truncate">
+                <a href="{{ 'javascript:void(0)' if lang == g.lang else url_for('tabler.index', lang=lang) }}" class="text-body d-block">{{ lang_label }}</a>
+              </div>
+              <div class="col-auto">
+                {% if g.lang == lang %}
+                  {{ render_icon("check", color="blue", svg_class="icon icon-2") }}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

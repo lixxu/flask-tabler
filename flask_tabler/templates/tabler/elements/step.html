@@ -1,0 +1,79 @@
+{% from "tabler/elements/base.html" import fill_color, get_link, show_tooltip %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro show_active(step, current_step) %}
+  {% if step == current_step %} active{% endif %}
+{% endmacro %}
+
+{% macro show_label(idx, current_step, step) %}
+  {% if idx > current_step %}
+    <span {{ show_tooltip(step.tooltip, **(step.kw or {})) }}>{{ _(step.header) }}</span>
+  {% else %}
+    <a href="{{ get_link(step.url) }}" {{ show_tooltip(step.tooltip, **(step.kw or {})) }}>{{ _(step.header or step.label) }}</a>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_one_step(step={}, idx=1, current_step=999) %}
+  {% if kwargs.vertical %}
+    {% if step.header %}
+      <li class="step-item {{ show_active(idx, current_step) }}">
+        <div class="h4 m-0">{{ show_label(idx, current_step, step) }}</div>
+        <div class="text-secondary">{{ _(step.body) }}</div>
+      </li>
+    {% else %}
+      <li class="step-item {{ show_active(idx, current_step) }}">
+        {{ show_label(idx, current_step, step) }}
+      </li>
+    {% endif %}
+  {% else %}
+    {% if idx > current_step %}
+      <span class="step-item"
+        {{ show_tooltip(step.tooltip, **(step.kw or {})) }}
+      >
+        {{ _(step.label or "") }}
+      </span>
+    {% else %}
+      <a
+        href="{{ get_link(step.url) }}"
+        class="step-item {{ show_active(idx, current_step) }}"
+        {{ show_tooltip(step.tooltip, **(step.kw or {})) }}
+        >
+        {{ _(step.label or "") }}
+      </a>
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro render_step(steps=[]) %}
+  <ul class="steps {{ kwargs.class or '' }}
+    {% if kwargs.color %} steps-{{ kwargs.color }}{% endif %}
+    {% if kwargs.counter %} steps-counter{% endif %}
+    {% if kwargs.vertical %} steps-vertical{% endif %}
+    ">
+    {% set passed_steps = [] %}
+    {% for step in steps %}
+      <li class="step-item {{ step.class or '' }}
+        {% if step.active %} active{% endif %}"
+        {% if step.tooltip %}
+          data-bs-toggle="tooltip"
+          data-bs-placement="{{ step.pos or 'top' }}"
+          title="{{ _(step.tooltip) }}"
+        {% endif %}
+        >
+        {% if step.header %}<div class="h4 m-0">{% endif %}
+        {% if 1 not in passed_steps %}
+          <a href="{{ get_link(step.url) }}">
+        {% endif %}
+        {{ render_icon(step.icon, **(step.icon_kw or {})) }}
+        {{ _(step.header or step.label or "") }}
+        {{ render_icon(step.right_icon, **(step.right_icon_kw or {})) }}
+        {% if step.header %}</div>{% endif %}
+        {% if 1 not in passed_steps %}</a>{% endif %}
+        {% if step.body %}
+          <div class="text-secondary">{{ _(step.body) }}</div>
+        {% endif %}
+      </li>
+      {% do passed_steps.append(1 if step.active else 0) %}
+    {% endfor %}
+  </ul>
+{% endmacro %}

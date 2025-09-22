@@ -1,0 +1,30 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% if config.TABLER_THEME_COLORS %}
+  <div class="nav-item dropdown d-flex">
+    <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="{{ _('Theme Color') }}" aria-expanded="false" data-bs-auto-close="outside" role="button">
+      {{ render_icon("palette", svg_class="icon icon-1") }}
+    </a>
+    <div class="dropdown-menu dropdown-menu-start dropdown-menu-sm-end dropdown-menu-card">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{ _("Theme Color") }}</h3>
+        </div>
+        <div class="dropdown-menu-columns">
+          <div class="dropdown-menu-column">
+            <div class="btn-list mx-3 my-3">
+              {% for color in config.TABLER_THEME_COLORS %}
+                <a href="{{ 'javascript:void(0)' if color == g.tabler_theme_primary else url_for('tabler.index', theme_color=color) }}" class="btn btn-{{ color }}">
+                  {% if g.tabler_theme_primary == color %}
+                    {{ render_icon("check") }}
+                  {% endif %}
+                  {{ color }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

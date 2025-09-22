@@ -1,0 +1,78 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_footer_right_links(links=[]) %}
+  {% for link in links %}
+    <li class="list-inline-item">
+      <a href="{{ link.url or '.' }}" class="link-secondary {{ link.class or '' }}" rel="noopener">
+        {{ render_icon(link.icon, **(link.icon_kw or {})) }}
+        {{ _(link.label) }}
+      </a>
+    </li>
+  {% endfor %}
+{% endmacro %}
+
+{% macro render_navbar_header_links(links=[]) %}
+  {% set id_prefix = kwargs.id_prefix or "navbar-header-link" %}
+  {% for link in links %}
+    {% if link.dropdowns %}
+      <li class="nav-item dropdown {{ id_prefix }}-{{ link.id }}">
+        <a class="nav-link dropdown-toggle" href="#navbar-{{ link.id }}" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
+          {% if link.icon %}
+            <span class="nav-link-icon d-sm-inline-block">
+              {{ render_icon(link.icon, **(link.icon_kw or {})) }}
+            </span>
+          {% endif %}
+          <span class="nav-link-title">
+            {{ _(link.label) }}
+          </span>
+          {% if link.right_icon %}
+            <span class="nav-link-icon d-sm-inline-block">
+              {{ render_icon(link.right_icon, **(link.icon_kw or {})) }}
+            </span>
+          {% endif %}
+        </a>
+        <div class="dropdown-menu">
+          {% for dd_link in link.dropdowns %}
+            <a class="dropdown-item{{ ' active' if dd_link.active }} {{ link.class or '' }}" href="{{ dd_link.url or 'javascript:void(0)' }}" rel="noopener">
+              {{ render_icon(dd_link.icon, **(dd_link.icon_kw or {})) }}
+              {{ _(dd_link.label) }}
+              {{ render_icon(dd_link.right_icon, **(dd_link.icon_kw or {})) }}
+            </a>
+          {% endfor %}
+        </div>
+      </li>
+    {% else %}
+      <li class="nav-item {{ id_prefix }}-{{ link.id }}">
+        <a class="nav-link" href="{{ link.url or 'javascript:void(0)' }}">
+          {% if link.icon %}
+            <span class="nav-link-icon d-sm-inline-block">
+              {{ render_icon(link.icon, **(link.icon_kw or {})) }}
+            </span>
+          {% endif %}
+          <span class="nav-link-title">
+            {{ _(link.label) }}
+          </span>
+          {% if link.right_icon %}
+            <span class="nav-link-icon d-sm-inline-block">
+              {{ render_icon(link.right_icon, **(link.icon_kw or {})) }}
+            </span>
+          {% endif %}
+        </a>
+      </li>
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro render_navbar_top_links(links=[]) %}
+  {% for link in links %}
+    <a href="{{ link.url or 'javascript:void(0)' }}"
+      class="btn btn-5{{ link.class or '' }}"
+      {% if link.window == "new" %}target="_blank"{% endif %}
+      rel="noreferrer"
+    >
+      {{ render_icon(link.icon, **(link.icon_kw or {})) }}
+      {{ _(link.label) }}
+      {{ render_icon(link.right_icon, **(link.icon_kw or {})) }}
+    </a>
+  {% endfor %}
+{% endmacro %}

@@ -1,0 +1,89 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+{% from "tabler/elements/avatar.html" import render_avatar %}
+{% from "tabler/elements/button.html" import render_x_button %}
+
+{% macro get_pos_class(pos="") %}
+  {% set pos = pos.replace("_", "-").replace("start", "x").replace("end", "y") %}
+  {% if pos in ("top-left", "top-x") %}
+    top-0 start-0
+  {% elif pos in ("top_center", "top-center") %}
+    top-0 start-50 translate-middle-x
+  {% elif pos in ("top-right", "top-y") %}
+    top-0 end-0
+  {% elif pos in ("middle-left", "middle-x") %}
+    top-50 start-0 translate-middle-y
+  {% elif pos in ("middle_center", "middle-center") %}
+    top-50 start-50 translate-middle
+  {% elif pos in ("middle-right", "middle-y") %}
+    top-50 end-0 translate-middle-y
+  {% elif pos in ("bottom-left", "bottom-x") %}
+    bottom-0 start-0
+  {% elif pos in ("bottom_center", "bottom-center") %}
+    bottom-0 start-50 translate-middle-x
+  {% elif pos in ("bottom-right", "bottom-y") %}
+    bottom-0 end-0
+  {% else %}
+    position-static
+  {% endif %}
+{% endmacro %}
+
+{% macro render_toast(toasts=[]) %}
+  {% if "autohide" not in kwargs %}
+    {% do kwargs.update(autohide=true) %}
+  {% endif %}
+  {% set pos_class = get_pos_class(pos=kwargs.pos or '') %}
+  {% if kwargs.in_div %}
+    <div
+      aria-live="{{ kwargs.live or 'assertive' }}"
+      aria-atomic="true"
+      class="rounded-3 {{ kwargs.div_class or '' }}
+        {% if pos_class and '-static' not in pos_class %}
+          position-relative
+        {% endif %}
+    ">
+  {% endif %}
+  {% if toasts|length > 1 or kwargs.container %}
+    <div
+      class="toast-container position-fixed p-2 {{ kwargs.class or '' }}
+        {{ pos_class }}"
+      {{ kwargs.extras or '' }}
+      >
+  {% endif %}
+  {% for toast in toasts %}
+    {% set is_rich = toast.title or toast.avatar or toast.avatar_kw or toast.time_text %}
+    <div class="toast fade {{ toast.class or '' }}
+      {% if not kwargs.hide %} show{% endif %}"
+      role="{{ kwargs.role or 'alert' }}"
+      aria-live="{{ kwargs.live or 'assertive' }}"
+      aria-atomic="true"
+      data-bs-autohide="{{ kwargs.autohide|tojson }}"
+      data-bs-toggle="toast"
+      {% if toast.id %}id="{{ toast.id }}"{% endif %}
+      {{ toast.extras or '' }}
+      >
+      {% if is_rich %}
+        <div class="toast-header {{ toast.header_class or '' }}">
+          {% if toast.avatar or toast.avatar_kw %}
+            {{ render_avatar(**(toast.avatar_kw or {})) }}
+          {% endif %}
+          <strong class="me-auto {{ toast.title_class or '' }}">{{ _(toast.title) }}</strong>
+          {% if toast.time_text %}<small>{{ toast.time_text }}</small>{% endif %}
+          {{ render_x_button(class="ms-2 %s"|format(toast.x_class or ''), dismiss="toast") }}
+        </div>
+      {% else %}
+        <div class="d-flex">
+      {% endif %}
+      <div class="toast-body {{ toast.body_class or '' }}">
+        {{ _(toast.body)|safe }}
+      </div>
+      {% if not is_rich %}
+        {{ render_x_button(class="me-2 m-auto %s"|format(toast.x_class or ''), dismiss="toast") }}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+  {% if toasts|length > 1 %}
+    </div>
+  {% endif %}
+  {% if kwargs.in_div %}</div>{% endif %}
+{% endmacro %}

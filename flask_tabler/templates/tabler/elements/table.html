@@ -1,0 +1,107 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_table(headers=[], rows=[], responsive=true, hover=true, vcenter=true, index=true) %}
+  {{ render_table_header(responsive, hover, vcenter, **kwargs) }}
+  {{ render_thead(headers, index, **(dict(kwargs.thead_kw or {}, sticky=kwargs.sticky))) }}
+  <tbody class="{{ kwargs.tbody_class or '' }}">
+    {% for row in rows %}
+      {% if index %}
+        {{ render_tr(**(dict(row, idx=loop.index + (kwargs.offset or 0)))) }}
+      {% else %}
+        {{ render_tr(**row) }}
+      {% endif %}
+    {% endfor %}
+  </tbody>
+  {{ render_tfoot(kwargs.tfoot or {}, index=index) }}
+  {{ render_table_footer(**kwargs) }}
+{% endmacro %}
+
+{% macro render_table_header(responsive=true, hover=true, vcenter=true) %}
+  {% if kwargs.in_div %}
+    <div class="table-responsive {{ kwargs.div_class or '' }}">
+  {% endif %}
+  <table
+    class="table {{ kwargs.class or '' }}
+      {% if vcenter %} table-vcenter{% endif %}
+      {% if kwargs.color %} table-{{ kwargs.color }}{% endif %}
+      {% if kwargs.nowrap %} table-nowrap{% endif %}
+      {% if kwargs.size %} table-{{ kwargs.size }}{% endif %}
+      {% if kwargs.striped %} table-striped{% endif %}
+      {% if kwargs.dark %} table-dark{% endif %}
+      {% if hover %} table-hover{% endif %}
+      {% if responsive and not kwargs.in_div %} table-responsive{% endif %}
+      {% if kwargs.borderless %} table-borderless{% endif %}
+    ">
+    {% if kwargs.caption %}
+      <caption>{{ _(kwargs.caption)|safe }}</caption>
+    {% endif %}
+{% endmacro %}
+
+{% macro render_table_footer() %}
+  </table>{% if kwargs.in_div %}</div>{% endif %}
+{% endmacro %}
+
+{% macro render_thead(headers=[], index=true) %}
+  <thead class="{{ kwargs.class or '' }}
+    {% if kwargs.sticky %} sticky-top{% endif %}
+    ">
+    <tr class="{{ kwargs.tr_class or '' }}">
+      {% if index %}
+        <th scope="col">{{ kwargs.index_tag or "#" }}</th>
+      {% endif %}
+      {% for head in headers %}
+        <th class="{{ head.class or '' }}
+          {% if kwargs.nowrap %} text-nowrap{% endif %}"
+          scope="col"
+          >
+          {{ render_icon(head.icon, **(head.icon_kw or {})) }}
+          {{ _(head)|safe }}
+          {{ render_icon(head.right_icon, **(head.right_icon_kw or {})) }}
+        </th>
+      {% endfor %}
+    </tr>
+  </thead>
+{% endmacro %}
+
+{% macro render_tr(cols=[], idx="") %}
+  <tr class="{{ kwargs.class or '' }}
+    {% if kwargs.bg %} table-{{ kwargs.bg }}{% endif %}">
+    {% if idx != "" %}{{ render_index_td(idx) }}{% endif %}
+    {% for col in cols %}
+      {{ render_td(col) }}
+    {% endfor %}
+  </tr>
+{% endmacro %}
+
+{% macro render_index_td(idx, scope="row") %}
+  <th scope="{{ scope }}">{{ idx }}</th>
+{% endmacro %}
+
+{% macro render_td(col="") %}
+  {% if col is string %}
+    {% set kw = dict(kwargs, data=col) %}
+  {% else %}
+    {% set kw = dict(kwargs, **col) %}
+  {% endif %}
+  <{{ kw.tag or "td" }}
+    {% if kw.scope %}scope="{{ kw.scope }}"{% endif %}
+    {% if kw.class %}class="{{ kw.class }}"{% endif %}
+    >
+    {{ render_icon(kw.icon, **(kw.icon_kw or {})) }}
+    {{ _(kw.data)|safe }}
+    {{ render_icon(kw.right_icon, **(kw.right_icon_kw or {})) }}
+  </{{ kw.tag or "td" }}>
+{% endmacro %}
+
+{% macro render_tfoot(data={}, index=true) %}
+  {% if data.cols %}
+    <tfoot class="{{ data.class or '' }}">
+      <tr class="{{ data.tr_class or '' }}">
+        {% if index %}{{ render_index_td(data.idx or "") }}{% endif %}
+        {% for col in data.cols %}
+          {{ render_td(col) }}
+        {% endfor %}
+      </tr>
+    </tfoot>
+  {% endif %}
+{% endmacro %}

@@ -1,0 +1,133 @@
+{% macro render_heading(level, head) %}
+  <h{{ level }}>{{ _(head) }}</h{{ level }}>
+{% endmacro %}
+
+{% macro render_paragraph(text) %}
+  <p>{{ _(text) }}</p>
+{% endmacro %}
+
+{% macro render_semantic_text(text_type, text, title="") %}
+  <{{ text_type }}{{ ' title="%s"'|format(_(title)) if title }}>{{ _(text) }}</{{ text_type }}>
+{% endmacro %}
+
+{% macro render_attr(text, title="") %}
+  {{ render_semantic_text("abbr", text, title) }}
+{% endmacro%}
+
+{% macro render_bold(text, title="") %}
+  {{ render_semantic_text("strong", text, title) }}
+{% endmacro %}
+
+{% macro render_cite(text, title="")%}
+  {{ render_semantic_text("cite", text, title) }}
+{% endmacro %}
+
+{% macro render_code(text, title="") %}
+  {{ render_semantic_text("code", text, title) }}
+{% endmacro %}
+
+{% macro render_del(text, title="") %}
+  {{ render_semantic_text("del", text, title) }}
+{% endmacro %}
+
+{% macro render_em(text, title="") %}
+  {{ render_semantic_text("em", text, title) }}
+{% endmacro %}
+
+{% macro render_ins(text, title="") %}
+  {{ render_semantic_text("ins", text, title) }}
+{% endmacro %}
+
+{% macro render_italic(text, title="") %}
+  {{ render_semantic_text("i", text, title) }}
+{% endmacro %}
+
+{% macro render_mark(text, title="") %}
+  {{ render_semantic_text("mark", text, title) }}
+{% endmacro %}
+
+{% macro render_sample(text, title="") %}
+  {{ render_semantic_text("sam", text, title) }}
+{% endmacro %}
+
+{% macro render_strikethrough(text, title="") %}
+  {{ render_semantic_text("s", text, title) }}
+{% endmacro %}
+
+{% macro render_sub(text, title="") %}
+  {{ render_semantic_text("sub", text, title) }}
+{% endmacro %}
+
+{% macro render_sup(text, title="") %}
+  {{ render_semantic_text("sup", text, title) }}
+{% endmacro %}
+
+{% macro render_time(text, title="") %}
+  {{ render_semantic_text("time", text, title) }}
+{% endmacro %}
+
+{% macro render_var(text, title="") %}
+  {{ render_semantic_text("var", text, title) }}
+{% endmacro %}
+
+{% macro render_underline(text, title="") %}
+  {{ render_semantic_text("u", text, title) }}
+{% endmacro %}
+
+{% macro render_transform(text, transform) %}
+  <p class="text-{{ transform }}">{{ _(text) }}</p>
+{% endmacro %}
+
+{% macro render_spacing(text, spacing="normal") %}
+  <p class="tracking-{{ spacing }}">{{ _(text) }}</p>
+{% endmacro %}
+
+{% macro render_line_hight_text(text, height="base") %}
+  <p class="lh-{{ hiehgt }}">{{ _(text) }}</p>
+{% endmacro %}
+
+{% macro render_antialiasing_text(text, antialiasing="antialiased") %}
+  <div class="{{ antialiasing }}">{{ _(text) }}</div>
+{% endmacro %}
+
+{% macro render_keyboard_input(keyboard) %}
+  {{ render_semantic_text("kbd", keyboard) }}
+{% endmacro %}
+
+{% macro render_kbd(keyboard) %}
+  {{ render_keyboard_input(keyboard) }}
+{% endmacro %}
+
+{% macro render_markdown(body="") %}
+  <div class="markdown">{{ _(body) }}</div>
+{% endmacro %}
+
+{% macro render_md(body="") %}
+  {{ render_markdown(body) }}
+{% endmacro %}
+
+{% macro render_hr(text="", align="") %}
+  {% if text %}
+    <div class="hr-text{{ ' hr-text-%s'|format(align) if align }}">
+      <span>{{ _(text) }}</span>
+    </div>
+  {% else %}
+    <hr />
+  {% endif %}
+{% endmacro %}
+
+{% macro render_p(text="") %}
+  <p class="{{ kwargs.class or '' }}">{{ _(text) }}</p>
+{% endmacro %}
+
+{% macro render_text(text="") %}
+  {% if kwargs.div %}
+    <div class="{{ kwargs.class or '' }}">
+  {% endif %}
+  {% if kwargs.p %}
+    {{ render_p(text, **kwargs) }}
+  {% else %}
+    {{ _(text) }}
+  {% endif %}
+  {% if kwargs.div %}</div>{% endif %}
+{% endmacro %}

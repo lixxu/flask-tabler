@@ -1,0 +1,80 @@
+{% extends "tabler/layouts/base.html" %}
+{% from "tabler/layouts/_helper.html" import render_navbar_header_links, render_navbar_top_links %}
+
+{% block layout_header %}
+  <!-- Navbar -->
+  {% set show_sticky_div = config.TABLER_STICKY_TOP and g.tabler_layout in ("boxed", "fluid", "horizontal", "navbar-dark", "fluid-navbar-dark", "condensed-box") %}
+  {% if show_sticky_div %}<div class="sticky-top">{% endif %}
+  <header class="navbar navbar-expand-md d-print-none
+    {% if 'overlap' in g.tabler_layout %} navbar-overlap
+    {% elif config.TABLER_STICKY_TOP  %} sticky-top
+    {% endif %}"
+    {% if g.tabler_layout in ("navbar-dark", "overlap", "fluid-overlap", "fluid-navbar-dark") %} data-bs-theme="dark"{% endif %}
+    >
+    <div class="container-xl">
+      {% include "tabler/layouts/_navbar_menu_icon.html" %}
+      {% include "tabler/layouts/_logo.html" %}
+      {% if config.SHOW_DRAG_AREA and g.tabler_layout in ("boxed", "fluid", "horizontal", "navbar-dark", "fluid-navbar-dark") %}
+        <div class="navbar-nav navlink flex-grow-1 drag-area mx-2">
+          <div class="d-none">drag1</div>
+        </div>
+      {% endif %}
+      <div class="navbar-nav flex-row order-md-last">
+        {% if g.tabler_layout in ("boxed", "condensed-box", "fluid", "horizontal", "navbar-dark", "fluid-navbar-dark") %}
+          <div class="nav-item d-flex me-2">
+            <div class="btn-list">
+              {% block navbar_top_links_area %}
+                {{ render_navbar_top_links(navbar_top_links) }}
+              {% endblock %}
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="d-flex">
+          {% include "tabler/layouts/_theme_mode.html" %}
+          {% include "tabler/layouts/_language_choices.html" %}
+          {% include "tabler/layouts/_theme_choices.html" %}
+          {% include "tabler/layouts/_layout_choices.html" %}
+          {% block navbar_top_right %}{% endblock %}
+        </div>
+        {% include "tabler/layouts/_login_avatar.html" %}
+      </div>
+    {% if g.tabler_layout not in ("condensed", "overlap", "fluid-overlap", "condensed-box") %}
+      </div>
+      </header>
+      <header class="navbar-expand-md">
+    {% endif %}
+    <div class="navbar-collapse collapse" id="navbar-menu">
+      {% if g.tabler_layout not in ("condensed", "overlap", "fluid-overlap", "condensed-box") %}
+        <div class="navbar">
+          <div class="container-xl">
+            <div class="row flex-fill align-items-center">
+              <div class="col">
+      {% else %}
+        <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+      {% endif %}
+        <div class="d-flex w-100">
+          <div class="p-0">
+            <ul class="navbar-nav">
+              {% block header_links_area %}
+                {{ render_navbar_header_links(header_links) }}
+              {% endblock %}
+            </ul>
+          </div>
+          {% if config.SHOW_DRAG_AREA and g.tabler_layout in ("condensed-box", "combined", "overlap", "fluid-overlap", "condensed") %}
+            <div class="p-0 flex-grow-1 drag-area mx-2">
+              <ul class="navbar-nav d-none">drag2</ul>
+            </div>
+          {% endif %}
+          </div>
+          </div>
+          {% if g.tabler_layout not in ("condensed", "overlap", "fluid-overlap", "condensed-box") %}</div>{% endif %}
+          {% block header_search %}
+            {% include "tabler/layouts/_header_search.html" %}
+          {% endblock %}
+        </div>
+      </div>
+    {% if g.tabler_layout not in ("condensed", "overlap", "fluid-overlap", "condensed-box") %}</div>{% endif %}
+  </header>
+  {% if show_sticky_div %}</div>{% endif %}
+{% endblock %}

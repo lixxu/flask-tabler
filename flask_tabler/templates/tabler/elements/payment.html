@@ -1,0 +1,9 @@
+{% macro render_payment(name) %}
+  <span class="payment {{ kwargs.class or '' }}
+    payment-provider-{{ name }}{% if kwargs.dark %}-dark{% endif %}
+    {% if kwargs.size %} payment-{{ kwargs.size }}{% endif %}
+    "
+    {{ (kwargs.extras or "")|safe }}
+    >
+  </span>
+{% endmacro %}

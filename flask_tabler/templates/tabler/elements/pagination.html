@@ -1,0 +1,28 @@
+{% from "tabler/elements/base.html" import get_link %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_pagination(pages=[]) %}
+  <ul class="pagination {{ kwargs.class or '' }}
+    {% if kwargs.circle %} pagination-circle{% endif %}
+    {% if kwargs.outline %} pagination-outline{% endif %}
+    ">
+    {% for page in pages %}
+      <li class="page-item {{ page.class or '' }}
+        {% if page.disabled or page.offset_label or page.offset %} disabled{% endif %}
+        {% if page.active %} active{% endif %}"
+        {{ (page.extras or '')|safe }}
+        >
+        <a class="page-link"
+          href="{{ get_link(page.url) }}"
+          tabindex="-1"
+          {% if page.disabled %} aria-disabled="true"{% endif %}>
+          {% if page.label %}{{ _(page.label) }}
+          {% elif page.offset_label or page.offset %}{{ (page.offset_label or "&hellip;")|safe }}
+          {% elif page.icon %}
+            {{ render_icon(page.icon, **(page.icon_kw or {})) }}
+          {% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endmacro %}

@@ -1,0 +1,86 @@
+{% from "tabler/elements/button.html" import render_x_button %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_status(status) %}
+  {% if status %}
+    <div class="modal-status bg-{{ status }}"></div>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_modal(id, fade=true, show_close_button=true) %}
+  <div class="modal modal-blur{% if fade %} fade{% endif %}"
+    id="{{ id }}"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true"
+    {% if kwargs.static %}
+      data-bs-backdrop="static" data-bs-keyboard="false"
+    {% endif %}
+    >
+    <div class="modal-dialog modal-dialog-centered
+      {% if kwargs.size %} modal-{{ kwargs.size }} %}{% endif %}"
+      role="document"
+      >
+      <div class="modal-content">
+        {{ render_status(kwargs.status) }}
+        {{ render_x_button(dismiss="modal") }}
+        {% if kwargs.header %}
+          <h5 class="modal-title">{{ _(kwargs.header) }}</h5>
+          {% if kwargs.body %}
+            <div class="modal-body">{{ _(kwargs.body)|safe }}</div>
+          {% endif %}
+        {% else %}
+          <div class="modal-body text-center y-4">
+            {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+            {% if kwargs.title %}<h3>{{ _(kwargs.title) }}</h3>{% endif %}
+            {% if kwargs.body %}
+              <div class="text-secondary">{{ _(kwargs.body)|safe }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+        {% if kwargs.footers or show_close_button %}
+          {% set buttons = kwargs.footers or [] %}
+          {% if show_close_button %}
+            {% if kwargs.expand_footer %}
+              {% do buttons.append(dict(url="#", label="Close", extras='data-bs-dismiss=modal')) %}
+            {% else %}
+              {% do buttons.append(dict(url="#", extra_class="me-auto", label="Close", extras='data-bs-dismiss=modal')) %}
+            {% endif %}
+          {% endif %}
+          <div class="modal-footer">
+            {% if kwargs.expand_footer %}
+              <div class="w-100">
+                <div class="row">
+                  {% for btn in buttons %}
+                    <div class="col">
+                      <a href="{{ btn.url }}"
+                        class="btn w-100
+                        {% if btn.class %} btn-{{ btn.class }}{% endif %}"
+                        {{ btn.extras or "" }}
+                      >
+                        {{ render_icon(btn.icon, **(btn.icon_kw or {})) }}
+                        {{ _(btn.label) }}</a>
+                        {{ render_icon(btn.right_icon, **(btn.right_icon_kw or {})) }}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% else %}
+              {% for btn in buttons %}
+                <a class="btn
+                  {% if btn.class %} btn-{{ btn.class }}{% endif %}
+                  {{ btn.extra_class or '' }}"
+                  {{ btn.extras or "" }}
+                  >
+                    {{ render_icon(btn.icon, **(btn.icon_kw or {})) }}
+                    {{ _(btn.label) }}
+                    {{ render_icon(btn.right_icon, **(btn.right_icon_kw or {})) }}
+                </a>
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endmacro %}

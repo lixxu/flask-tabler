@@ -1,0 +1,31 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+{% from "tabler/elements/badge.html" import render_badge %}
+{% from "tabler/elements/avatar.html" import render_avatar %}
+{% from "tabler/elements/legend.html" import render_legend %}
+{% from "tabler/elements/button.html" import render_x %}
+
+{% macro render_tags(tags=[]) %}
+  {% set icon_kw = kwargs.icon_kw or {} %}
+  {% set avatar_kw = kwargs.avatar_kw or {} %}
+  {% set badge_kw = kwargs.badge_kw or {} %}
+  {% set legend_kw = kwargs.legend_kw or {} %}
+  <div class="tags-list {{ kwargs.class or '' }}">
+    {% for tag in tags %}
+      <span class="tag {{ tag.class or '' }}">
+        {{ render_icon(tag.icon, **(merge_dict(icon_kw, tag.icon_kw))) }}
+        {% if tag.avatar %}
+          {{ render_avatar(tag.avatar, **(merge_dict(avatar_kw, tag.avatar_kw))) }}
+        {% elif tag.badge or tag.badge_kw or badge_kw %}
+          {{ render_badge(tag.badge, **(merge_dict(badge_kw, tag.badge_kw))) }}
+        {% elif tag.legend or tag.legend_kw or legend_kw %}
+          {{ render_legend(tag.legend, **(merge_dict(legend_kw, tag.legend_kw))) }}
+        {% elif tag.flag %}
+          <span class="flag flag-xxs flag-country-{{ tag.flag }}"></span>
+        {% endif %}
+        {{ _(tag.label)|safe }}
+        {{ render_icon(tag.right_icon, **(merge_dict(icon_kw, tag.right_icon_kw))) }}
+        {{ render_x() }}
+      </span>
+    {% endfor %}
+  </div>
+{% endmacro %}

@@ -1,0 +1,42 @@
+{% from "tabler/elements/base.html" import fill_color %}
+
+{% macro render_status(label="")  %}
+  <span
+    class="status
+    {{ fill_color(kwargs.color, "status-") }}
+    {% if kwargs.lite %} status-lite{% endif %}
+    ">
+    {% if kwargs.dot %}
+      {{ render_status_dot(**(kwargs.dot_kw or {})) }}
+    {% endif %}
+    {% if kwargs.indicator %}
+      {{ render_status_indicator(**(kwargs.indicator_kw or {})) }}
+    {% endif %}
+    {{ _(label) }}
+    {% if kwargs.right_dot %}
+      {{ render_status_dot(**(kwargs.right_dot_kw or {})) }}
+    {% endif %}
+    {% if kwargs.right_indicator %}
+      {{ render_status_indicator(**(kwargs.right_indicator_kw or {})) }}
+    {% endif %}
+  </span>
+{% endmacro %}
+
+{% macro render_status_dot() %}
+  <span class="status-dot{{ fill_color(kwargs.color, "status-") }}
+    {% if kwargs.animated %} status-dot-animated{% endif %}
+    {{ kwargs.class or '' }}
+    ">
+  </span>
+{% endmacro %}
+
+{% macro render_status_indicator() %}
+  <span class="status-indicator
+    {{ fill_color(kwargs.color, "status-") }}
+    {% if kwargs.animated %} status-indicator-animated{% endif %}"
+    >
+    <span class="status-indicator-circle"></span>
+    <span class="status-indicator-circle"></span>
+    <span class="status-indicator-circle"></span>
+  </span>
+{% endmacro %}

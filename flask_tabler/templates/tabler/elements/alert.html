@@ -1,0 +1,55 @@
+{% from "tabler/elements/avatar.html" import render_avatar %}
+{% from "tabler/elements/base.html" import get_link %}
+{% from "tabler/elements/button.html" import render_button %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro pick_class(color, dismissible) %}
+  {% if color %} alert-{{ color }}{% endif %}
+  {% if dismissible %} alert-dismissible{% endif %}
+  {% if kwargs.important %} alert-important{% endif %}
+{% endmacro %}
+
+{% macro render_alert(content="", color="success", dismissible=true, avatar_me="me-3") %}
+  <div class="alert {{ pick_class(color, dismissible, **kwargs) }}" role="alert">
+    {% if kwargs.icon or kwargs.avatar or kwargs.avatar_text %}
+      <div class="d-flex">
+        <div>
+          {% if kwargs.icon %}
+            {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+          {% endif %}
+          {% if kwargs.avatar or kwargs.avatar_text %}
+            {{ render_avatar(
+                kwargs.avatar or "",
+                kwargs.avatar_text or "",
+                class=avatar_me,
+                **(kwargs.avatar_kw or {})
+              )
+            }}
+          {% endif %}
+        </div>
+      <div>
+    {% endif %}
+    {% if kwargs.title %}
+      <h4 class="alert-title">{{ _(kwargs.title) }}</h4>
+    {% endif %}
+    <div class="text-secondary">
+      {{ _(content) }}
+      {% if kwargs.link %}
+        <a href="{{ get_link(kwargs.link) }}" class="alert-link">{{ _(kwargs.link_label) or kwargs.link }}</a>
+      {% endif %}
+    </div>
+    {% if kwargs.icon or kwargs.avatar or kwargs.avatar_text %}
+      </div></div>
+    {% endif %}
+    {% if kwargs.buttons %}
+      <div class="btn-list mt-2 ms-auto">
+        {% for btn in kwargs.buttons %}
+          {{ render_button(**btn) }}
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if dismissible %}
+      <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+    {% endif %}
+  </div>
+{% endmacro %}

@@ -1,0 +1,10 @@
+{% macro render_datagrid(grids=[]) %}
+  <div class="datagrid {{ kwargs.class or '' }}">
+    {% for grid in grids %}
+      <div class="datagrid-item {{ grid.class or '' }}">
+        <div class="datagrid-title {{ grid.title_class or '' }}">{{ _(grid.title) }}</div>
+        <div class="datagrid-content {{ grid.content_class or '' }}">{{ _(grid.content)|safe }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}

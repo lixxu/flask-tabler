@@ -1,0 +1,20 @@
+{% from "tabler/elements/base.html" import show_tooltip %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_switch_icon(icon, color="secondary", color_b="primary") %}
+  <button
+    class="switch-icon
+    {% if kwargs.animation %} switch-icon-{{ kwargs.animation }}{% endif %}
+    {{ kwargs.class or '' }}
+    "
+    data-bs-toggle="switch-icon"
+    {{ show_tooltip(kwargs.tooltip, **kwargs) }}
+    >
+    <span class="switch-icon-a text-{{ color }}">
+      {{ render_icon(icon, **(kwargs.icon_kw or {}))}}
+    </span>
+    <span class="switch-icon-b text-{{ color_b }}">
+      {{ render_icon(kwargs.icon_b or icon, **(kwargs.icon_b_kw or kwargs.icon_kw or {})) }}
+    </span>
+  </button>
+{% endmacro %}

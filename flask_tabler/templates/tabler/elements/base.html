@@ -1,0 +1,43 @@
+{% macro fill_css(value="", prefix="", yes_value="", postfix="") %}
+  {% if value %}
+    {% if yes_value %} {{ yes_value }}
+    {% else %} {{ prefix }}{{ value }}{{ postfix }}
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro fill_color(color="", prefix="bg-") %}
+  {{ fill_css(color, prefix, **kwargs) }}
+{% endmacro %}
+
+{% macro fill_text_color(color="", prefix="text-") %}
+  {{ fill_color(color, prefix) }}
+{% endmacro %}
+
+{% macro fill_btn(color="") %}
+  {{ fill_css(color, " btn-") }}
+{% endmacro %}
+
+{% macro get_link(url="", fallback="javascript:void(0)") %}
+  {{ url or fallback }}
+{% endmacro %}
+
+{% macro show_tooltip(tooltip="") %}
+  {% if tooltip %}
+    data-bs-toggle="tooltip"
+    data-bs-placement="{{ kwargs.pos or 'top' }}"
+    title="{{ _(tooltip) }}"
+  {% endif %}
+{% endmacro %}
+
+{% macro get_default(val="", fallback="") %}
+  {{ val or fallback }}
+{% endmacro %}
+
+{% macro get_file_url(path) %}
+  {% if path.startswith(("/", "http:", "https:")) %}
+    {{ path }}
+  {% else %}
+    {{ url_for(kwargs.file_endpoint or "static", filename=path) }}
+  {% endif %}
+{% endmacro %}

@@ -1,0 +1,25 @@
+{% from "tabler/elements/button.html" import render_x_button %}
+{% from "tabler/elements/icon.html" import render_icon %}
+
+{% macro render_offcanvas(id, pos="start", show_close_button=true) %}
+  <div class="offcanvas offcanvas-{{ pos }} {{ kwargs.class or '' }}"
+    {% if kwargs.scroll %} data-bs-scroll="true"{% endif %}
+    tabindex="-1" id="{{ id }}" aria-labelledby="ocv-label-{{ id }}">
+    <div class="offcanvas-header">
+      {% if kwargs.title %}
+        <h2 class="offcanvas-title" id="ocv-label-{{ id }}">{{ _(kwargs.title) }}</h2>
+      {% endif %}
+      {{ render_x_button(dismiss="offcanvas") }}
+    </div>
+    <div class="offcanvas-body">
+      <div>{{ _(kwargs.body) }}</div>
+      {% if show_close_button %}
+        <div class="mt-3">
+          <button class="btn btn-{{ kwargs.btn_class or 'primary' }}" type="button" data-bs-dismiss="offcanvas">
+            {{ render_icon(kwargs.btn_icon, **(kwargs.btn_icon_kw or {})) }} {{ _(kwargs.btn_label or "Close") }}
+          </button>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}

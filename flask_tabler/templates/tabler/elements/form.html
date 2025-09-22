@@ -1,0 +1,503 @@
+{% from "tabler/elements/icon.html" import render_icon %}
+{% from "tabler/elements/button.html" import render_button %}
+
+{% macro render_form_head(form, label="") %}
+  <form
+    class="card {{ kwargs.class or '' }}"
+    method="{{ kwargs.method or 'get' }}"
+    {% if kwargs.upload %} enctype="multipart/form-data"{% endif %}
+    {{ kwargs.extras or "" }}
+  >
+    {{ form.hidden_tag() }}
+    {% if label %}
+      <div class="card-header">
+        <h3 class="card-title">{{ _(label)|safe }}</h3>
+      </div>
+    {% endif %}
+    <div class="card-body">
+      {% if kwargs.fieldset %}<fieldset class="form-fieldset">{% endif %}
+      {% if kwargs.legend %}
+        <legend>{{ _(kwargs.legend)|safe }}</legend>
+      {% endif %}
+{% endmacro %}
+
+{% macro render_form_foot() %}
+  {% if kwargs.fieldset %}</fieldset>{% endif %}
+  </div></div></form>
+{% endmacro %}
+
+{% macro render_errors(errors=[]) %}
+  {% if errors %}
+    <div class="row g-{{ kwargs.gutter or 2 }}">
+    {% if errors|length == 1 %}
+      <div class="text-red">{{ _(errors[0])|safe }}</div>
+    {% else %}
+      <ul>
+        {% for err in errors %}
+          <li class="text-red">{{ _(err)|safe }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro get_required(field, required=-1) %}
+  {# -1 means auto (from field setting), > 0 means force required #}
+  {% if required > 0 or (required == -1 and field.flags.required) %}
+    required
+  {% endif %}
+{% endmacro %}
+
+{% macro get_valid_state(field) %}
+  {% if field.errors %} is-invalid{% endif %}
+{% endmacro %}
+
+{% macro render_form_label(field, required=-1) %}
+  <label
+    class="form-label
+    {{ get_required(field, required) }}
+    {{ kwargs.label_class or '' }}"
+    for="{{ kwargs.name or field.name }}">
+    {{ render_icon(kwargs.label_icon, **(kwargs.label_icon_kw or {})) }}
+    {{ _(kwargs.label or field.label.text) }}
+    {{ render_icon(kwargs.right_label_icon, **(kwargs.right_label_icon_kw or {})) }}
+    {% if kwargs.help %}
+      <span class="form-help" data-bs-toggle="popover" data-bs-placement="top"
+      data-bs-html="true"
+      data-bs-content="{{ _(kwargs.help)|safe }}">?</span>
+    {% endif %}
+    {{ render_form_label_info(**kwargs) }}
+  </label>
+{% endmacro %}
+
+{% macro render_form_label_info() %}
+  {% if kwargs.label_info %}
+    <span class="form-label-description {{ kwargs.label_info_class or '' }}">{{ _(kwargs.label_info)|safe }}</span>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_form_hint() %}
+  {% if kwargs.hint %}
+    <div class="form-hint {{ kwargs.hint_class or '' }}">
+      <em>{{ _(kwargs.hint)|safe }}</em>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_submit(label="Submit") %}
+  <div class="text-{{ kwargs.align or 'end' }} {{ kwargs.class or '' }}">
+    <button type="submit" class="btn btn-{{ kwargs.btn_class or 'primary' }}">
+      {{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+      {{ _(label) }}
+      {{ render_icon(kwargs.right_icon, **(kwargs.right_icon_kw or {})) }}
+    </button>
+    {% if kwargs.cancel_url %}
+      {{ render_button(kwargs.cancel_url, kwargs.cancel_label or "Cancel", **(kwargs.cancel_kw or {})) }}
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% macro render_form_row(cols=[]) %}
+  <div class="row {{ kwargs.class or '' }}">
+    {% for col in cols %}
+      <div class="col-md-{{ col.col_md or kwargs.col_md or 6 }} col-sm-{{ col.col_sm or kwargs.col_sm or 12 }} {{ col.class or kwargs.col_class or '' }}">
+        {{ col.html|safe }}
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro in_div_head(in_div=true) %}
+  {% if in_div %}<div class="mb-3 {{ kwargs.in_div_class or '' }}">{% endif %}
+{% endmacro %}
+
+{% macro show_input_spinner() %}
+  <span class="input-icon-addon">
+    <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+  </span>
+{% endmacro %}
+
+{% macro show_check(key="") %}
+  <span class="input-group-text">
+    <input
+      {% if kwargs[key + "check_name"] %} name="{{ kwargs[key + 'check_name'] }}"{% endif %}
+      {% if kwargs[key + "check_id"] %} id="{{ kwargs[key + 'check_id'] }}"{% endif %}
+      class="form-check-input m-0"
+      type="{{ 'checkbox' if kwargs[key + 'checkbox'] else 'radio' }}"
+      {{ ' checked' if kwargs[key + "checked"] else '' }}
+    />
+  </span>
+{% endmacro %}
+
+{% macro show_input_field(field, autocomplete=true) %}
+  {% set name = kwargs.name or field.name %}
+  {% set id = kwargs.id or name %}
+  {% set input_type = kwargs.input_type or ("password" if "Password" in field.type else "input") %}
+  <input
+    type="{{ input_type }}"
+    class="form-control
+      {{ get_valid_state(field) }}
+      {% if kwargs.prepended %} ps-0
+      {% elif kwargs.appended %} text-end pe-0
+      {% endif %}
+      {% if kwargs.size %} form-control-{{ kwargs.size }}{% endif %}
+      {% if kwargs.rounded %} form-control-rounded{% endif %}
+      {% if kwargs.flush %} form-control-flush{% endif %}
+      {{ kwargs.input_class or '' }}
+    "
+    id="{{ id }}"
+    name="{{ name }}"
+    placeholder="{{ _(kwargs.placeholder or '') }}"
+    {% if kwargs.readonly %} readonly{% endif %}
+    {% if kwargs.disabled %} disabled{% endif %}
+    {% if not autocomplete %} autocomplete="off"{% endif %}
+    {{ (kwargs.input_extras or '')|safe }}
+    value="{{ field.data or '' }}"
+  />
+{% endmacro %}
+
+{% macro fill_form_field_head(field, required, in_div) %}
+  {{ in_div_head(in_div, **kwargs) }}
+  {{ render_form_label(field, required, **kwargs) }}
+{% endmacro %}
+
+{% macro fill_form_field_foot(field, in_div) %}
+  {{ render_form_hint(**kwargs) }}
+  {{ render_errors(field.errors) }}
+  {% if in_div %}</div>{% endif %}
+{% endmacro %}
+
+{% macro render_form_input(field, required=-1, in_div=true, autocomplete=true) %}
+  {% set with_icon = kwargs.icon or kwargs.right_icon or kwargs.spinner or kwargs.right_spinner %}
+  {% set with_group_text = kwargs.group_text or kwargs.right_group_text %}
+  {% set with_check = kwargs.checkbox or kwargs.radio or kwargs.right_checkbox or kwargs.right_radio %}
+  {% set icon_kw = dict(kwargs.icon_kw or {}, class="input-icon-addon") %}
+  {% set right_icon_kw = dict(kwargs.right_icon_kw or {}, class="input-icon-addon") %}
+  {% set with_pended = kwargs.prepended or kwargs.appended %}
+
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+
+  {% if with_group_text %}
+    <div class="input-group">
+  {% elif with_icon %}
+    <div class="input-icon">
+  {% elif with_check %}
+    <div class="input-group">
+  {% elif with_pended or kwargs.appended_link or kwargs.kbd or kwargs.icons %}
+    <div class="input-group input-group-flat">
+  {% endif %}
+
+  {% if with_group_text %}
+    {% if kwargs.group_text %}
+      <span class="input-group-text">{{ _(kwargs.group_text) }}</span>
+    {% endif %}
+  {% elif with_icon %}
+    {% if kwargs.icon %}
+      {{ render_icon(kwargs.icon, **icon_kw) }}
+    {% elif kwargs.spinner %}
+      {{ show_input_spinner() }}
+    {% endif %}
+  {% elif with_check %}
+    {% if kwargs.checkbox or kwargs.radio %}
+      {{ show_check(**kwargs) }}
+    {% endif %}
+  {% elif kwargs.prepended %}
+    <span class="input-group-text">{{ _(kwargs.prepended) }}</span>
+  {% endif %}
+
+  {{ show_input_field(field, autocomplete, **kwargs) }}
+
+  {% if with_group_text %}
+    {% if kwargs.right_group_text %}
+      <span class="input-group-text">{{ _(kwargs.right_group_text) }}</span>
+    {% endif %}
+  {% elif with_icon %}
+    {% if kwargs.right_icon %}
+      {{ render_icon(kwargs.right_icon, **right_icon_kw) }}
+    {% elif kwargs.right_spinner %}
+      {{ show_input_spinner() }}
+    {% endif %}
+  {% elif with_check %}
+    {% if kwargs.right_checkbox or kwargs.right_radio %}
+      {{ show_check("right_", **kwargs) }}
+    {% endif %}
+  {% elif kwargs.appended %}
+    <span class="input-group-text">{{ _(kwargs.appended) }}</span>
+  {% elif kwargs.appended_link %}
+    <span class="input-group-text">
+      <a href="{{ kwargs.appended_link }}" class="input-group-link">{{ _(kwargs.appended_link_label) }}</a>
+    </span>
+  {% elif kwargs.kbd %}
+    <span class="input-group-text"><kbd>{{ kwargs.kbd }}</kbd></span>
+  {% elif kwargs.icons %}
+    <span class="input-group-text">
+      {% for icon in kwargs.icons %}
+        <a href="{{ icon.href }}" class="link-secondary{{ ' ms-2' if not loop.first }} {{ icon.class or '' }}" title="{{ _(icon.title or '') }}"
+        data-bs-toggle="tooltip">
+          {{ render_icon(icon.icon, **(icon.kw or {})) }}
+        </a>
+      {% endfor %}
+    </span>
+  {% endif %}
+  {% if with_icon or with_group_text or with_check or with_pended or kwargs.appended_link or kwargs.kbd or kwargs.icons %}</div>{% endif %}
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_textarea(field, required=-1, in_div=true) %}
+  {% set name = kwargs.name or field.name %}
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  <textarea
+    name="{{ name }}"
+    class="form-control {{ get_valid_state(field) }} {{ kwargs.class or '' }}"
+    data-bs-toggle="autosize"
+    placeholder="{{ _(kwargs.placeholder or '') }}"
+    {% if kwargs.rows %}rows="{{ kwargs.rows }}"{% endif %}
+    {{ kwargs.extras or '' }}
+    >{{ field.data or '' }}</textarea>
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_datalist(field, required=-1, in_div=true) %}
+  {% set name = kwargs.name or field.name %}
+  {% set id = kwargs.id or name %}
+  {% set kw = dict(kwargs, input_extras='list="%s-dlo"'|format(id)) %}
+
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  {{ show_input_field(field, **kw)}}
+  <datalist id="{{ id }}-dlo">
+    {% for opt in kwargs.options or [] %}
+      <option value="{{ opt }}" />
+    {% endfor %}
+  </datalist>
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_switch(field, required=-1, in_div=true) %}
+  {% set name = kwargs.name or field.name %}
+  {% set input_type = "checkbox" if "Multi" in field.type else "radio" %}
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  {% for choice in field.choices %}
+    {% set val = choice[0] %}
+    <label class="form-check{% if kwargs.inline %} form-check-inline{% endif %} form-switch">
+      <input
+        name="{{ name }}"
+        class="form-check-input"
+        type="{{ kwargs.input_type or input_type }}"
+        value="{{ val }}"
+        role="switch"
+        {% if val in (field.data or []) %} checked{% endif %}
+        {% if val in (kwargs.disabled or []) %} disabled{% endif %}
+        switch
+      />
+      <span class="form-check-label">{{ _(choice[1]) }}</span>
+    </label>
+  {% endfor %}
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_checkbox(field, required=-1, in_div=true) %}
+  {% set name = kwargs.name or field.name %}
+  {% set input_type = kwargs.input_type or "checkbox" if "Multi" in field.type else "radio" %}
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  <div>
+    {% for choice in field.choices %}
+      <label class="form-check{% if kwargs.inline %} form-check-inline{% endif %}">
+        <input
+          name="{{ name }}"
+          class="form-check-input"
+          type="{{ input_type }}"
+          value="{{ choice[0] }}"
+          {% if choice[0] in (field.data or []) %} checked{% endif %}
+          {% if choice[0] in (kwargs.disabled or []) %} disabled{% endif %}
+        />
+        <span class="form-check-label">{{ _(choice[1]) }}</span>
+      </label>
+    {% endfor %}
+  </div>
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_separated_input(field, required=-1, in_div=true) %}
+  {% set name = kwargs.name or field.name %}
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  <div class="row g-2">
+    <div class="col">
+      {{ show_input_field(field, input_type="text", **kwargs) }}
+    </div>
+    <div class="col-auto">
+      <a href="{{ kwargs.href or '#' }}" class="btn btn-icon" aria-label="Button">{{ render_icon(kwargs.icon, **(kwargs.icon_kw or {})) }}
+      </a>
+    </div>
+  </div>
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_select(field, required=-1, in_div=true) %}
+  {% set name = kwargs.name or field.name %}
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  <select
+    name="{{ name }}"
+    id="{{ kwargs.id or name }}"
+    class="form-control form-select
+      {% if kwargs.size %} form-select-{{ kwargs.size }}{% endif %}
+      {% if field.errors %} is-invalid{% endif %}
+      "
+    {% if "Multi" in field.type %} multiple{% endif %}
+    autocomplete="off"
+  >
+    {% for choice in field.choices %}
+      {% set val = choice[0] %}
+      <option value="{{ val }}"{% if val in (field.data or []) %} selected{% endif %}>{{ (kwargs.labels or {})[val] or _(choice[1]) }}</option>
+    {% endfor %}
+  </select>
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_color_check(field, required=-1, in_div=true) %}
+  {# checkbox is wtforms multiselect #}
+  {% set is_circle = kwargs.circle if "circle" in kwargs else "Multi" not in field.type %}
+  {% set name = kwargs.name or field.name %}
+  {% set id = kwargs.id or name %}
+
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  <div class="row g-{{ kwargs.gutter or 2 }}">
+    {% for choice in field.choices %}
+      {% set val = choice[0] %}
+      <div class="col-auto">
+        <label class="form-colorinput{% if val == 'white' %} form-colorinput-light{% endif %}">
+          <input
+            id="{{ id }}"
+            name="{{ name }}"
+            type="{{ 'checkbox' if field.type == 'SelectMultipleField' else 'radio' }}"
+            value="{{ val }}"
+            class="form-colorinput-input"
+            {% if val in (field.data or []) %} checked{% endif %}
+            />
+          <span
+            class="form-colorinput-color bg-{{ val }}
+            {% if is_circle %} rounded-circle{% endif %}"
+            >
+          </span>
+        </label>
+      </div>
+    {% endfor %}
+  </div>
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_color_picker(field, required=-1, title="Choose color") %}
+  {# picker is a input field #}
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  <div class="row g-{{ kwargs.gutter or 2 }}">
+    <div class="col-auto {{ kwargs.div_class or '' }}">
+      <input
+        type="color"
+        class="form-control form-control-color {{ kwargs.class or '' }}"
+        value="{{ field.data or '' }}"
+        title="{{ _(title) }}"
+        {{ kwargs.extras or "" }}
+      />
+    </div>
+  </div>
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_selectgroup(field, required=-1, in_div=true) %}
+  {% set name = kwargs.name or field.name %}
+  {% set input_type = "checkbox" if "Multi" in field.type else "radio" %}
+  {% set icons = kwargs.icons or {} %}
+  {% set right_icons = kwargs.right_icons or {} %}
+  {% set icons_kw = kwargs.icons_kw or dict(icon_size=1) %}
+  {% set right_icons_kw = kwargs.right_icons_kw or dict(icon_size=1) %}
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  <div class="row g-{{ kwargs.gutter or 2 }}">
+    <div class="form-selectgroup
+      {% if kwargs.pill %} form-selectgroup-pills{% endif %}
+      {% if kwargs.boxes %} form-selectgroup-boxes d-flex flex-column{% endif %}
+      {{ kwargs.class or '' }}
+      "
+      {{ kwargs.extras or "" }}
+      >
+      {% for choice in field.choices %}
+        {% set val = choice[0] %}
+        <label class="form-selectgroup-item{% if kwargs.boxes %} flex-fill{% endif %}">
+          <input
+            type="{{ input_type }}"
+            name="{{ name }}"
+            value="{{ val }}"
+            class="form-selectgroup-input"
+            {% if val in (field.data or []) %} checked{% endif %}
+          />
+          <span class="form-selectgroup-label">
+            {{ render_icon(icons[val], **merge_dict(icons_kw, icons_kw[val])) }}
+            {{ _(choice[1])|safe }}
+            {{ render_icon(right_icons[val], **merge_dict(right_icons_kw, right_icons_kw[val])) }}
+          </span>
+        </label>
+      {% endfor %}
+    </div>
+  </div>
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_image_check(field, required=-1, in_div=true) %}
+  {% set name = kwargs.name or field.name %}
+  {% set images = kwargs.images or {} %}
+  {% set avatars = kwargs.avatars or {} %}
+  {% set avatar_size = kwargs.avatar_size or "xl" %}
+  {% set input_type = "checkbox" if "Multi" in field.type else "radio" %}
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  <div class="row g-{{ kwargs.gutter or 2 }}">
+    {% for choice in field.choices %}
+      {% set val = choice[0] %}
+      <div class="col-{{ kwargs.col_size or 3 }}">
+        <label class="form-imagecheck">
+          <input
+            name="{{ name }}"
+            type="{{ input_type }}"
+            value="{{ val }}"
+            class="form-imagecheck-input"
+            {% if val in (field.data or []) %} checked{% endif %}
+          />
+          <span class="form-imagecheck-figure">
+            {% if avatars %}
+              <span class="form-imagecheck-image">
+                {% if avatars[val] is image_data %}
+                  <span class="avatar avatar-{{ avatar_size }}"
+                    style="background-image: url({{ avatars[val] }})">
+                  </span>
+                {% else %}
+                  <span class="avatar avatar-{{ avatar_size }}">{{ _(avatars[val]) }}</span>
+                {% endif %}
+              </span>
+            {% else %}
+              <img src="{{ images[val] }}" alt="" class="form-imagecheck-image" />
+            {% endif %}
+          </span>
+        </label>
+      </div>
+    {% endfor %}
+  </div>
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
+
+{% macro render_form_upload(field, required=-1, in_div=true) %}
+  {% set accept = kwargs.accept %}
+  {% set max_size = kwargs.max_size %}
+  {% set max_files = kwargs.max_files or 0 %}
+  {% set name = kwargs.name or field.name %}
+  {{ fill_form_field_head(field, required=required, in_div=in_div, **kwargs) }}
+  <input type="file"
+    class="form-control filepond {{ extra_class }}"
+    name="{{ name }}"
+    id="{{ kwargs.id or name }}"
+    data-allow-reorder="true"
+    {% if accept %} accept={{ accept|tojson }}{% endif %}
+    {% if max_size %} data-max-file-size={{ max_size|tojson }}{% endif %}
+    {{ ' data-max-files=%s'|format(max_files) if max_files }}
+    {{ ' disabled' if kwargs.disabled }}
+    {{ ' multiple' if max_files > 1 }}
+  />
+  {{ fill_form_field_foot(field, in_div=in_div, **kwargs) }}
+{% endmacro %}
